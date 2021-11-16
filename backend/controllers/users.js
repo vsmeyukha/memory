@@ -88,7 +88,12 @@ const login = async (req, res, next) => {
     })
       .status(201).send({
         message: messages.authentification,
-        user: userFoundByEmail,
+        user: {
+          name: userFoundByEmail.name,
+          surname: userFoundByEmail.surname,
+          patronymic: userFoundByEmail.patronymic,
+          email: userFoundByEmail.email,
+        },
       });
   } catch (err) {
     return next(err);
