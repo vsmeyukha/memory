@@ -151,7 +151,7 @@ const signOut = (req, res) => {
     httpOnly: true,
   })
     .status(201).send({
-      message: messages.deleteCookie
+      message: messages.deleteCookie,
     });
 };
 
