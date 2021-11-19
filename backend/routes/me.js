@@ -23,6 +23,6 @@ router.post('/register', asyncHandler(register));
 router.post('/login', asyncHandler(login));
 
 // ? это тестовая история, ее потом надо будет подчистить
-router.get('/allusers', getAllUsers);
+router.get('/allusers', asyncHandler(getAllUsers));
 
 module.exports = router;
