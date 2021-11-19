@@ -1,7 +1,8 @@
 const messages = {
   authentification: 'Аутентификация прошла успешно',
   deleteCookie: 'Кука удалена',
-  deleteMovie: 'Фильм успешно удален',
+  deleteDeadPerson: 'Умерший человек удален',
+  deleteYourAccount: 'Ваш аккаунт успешно удален',
 };
 
 module.exports = messages;

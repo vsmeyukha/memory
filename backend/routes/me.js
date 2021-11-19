@@ -10,6 +10,7 @@ const {
   getCurrentUser,
   updateUser,
   signOut,
+  deleteUser,
 } = require('../controllers/users');
 
 router.get('/', auth, asyncHandler(getCurrentUser));
@@ -21,6 +22,8 @@ router.post('/signout', auth, signOut);
 router.post('/register', asyncHandler(register));
 
 router.post('/login', asyncHandler(login));
+
+router.delete('/', auth, asyncHandler(deleteUser));
 
 // ? это тестовая история, ее потом надо будет подчистить
 router.get('/allusers', asyncHandler(getAllUsers));

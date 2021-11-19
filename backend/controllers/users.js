@@ -160,6 +160,19 @@ const signOut = (req, res) => {
     });
 };
 
+const deleteUser = async (req, res, next) => {
+  await User.findByIdAndRemove(req.user._id);
+
+  const token = '';
+
+  res.cookie('jwt', token, {
+    httpOnly: true,
+  })
+    .status(201).send({
+      message: messages.deleteYourAccount,
+    });
+};
+
 module.exports = {
   getAllUsers,
   register,
@@ -167,4 +180,5 @@ module.exports = {
   getCurrentUser,
   updateUser,
   signOut,
+  deleteUser,
 };

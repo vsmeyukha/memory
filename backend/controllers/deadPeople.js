@@ -1,4 +1,5 @@
 const DeadPerson = require('../models/deadPerson');
+const messages = require('../constants/messages');
 
 const getAllDeadPeople = async (req, res, next) => {
   const allDeadPeople = await DeadPerson.find({});
@@ -32,7 +33,12 @@ const updateDeadPerson = async (req, res, next) => {
 
 const deleteDeadPerson = async (req, res, next) => {
   await DeadPerson.findByIdAndRemove(req.params.deadPersonId);
-  return res.status(200).send({ message: "Человек удален" });
+  return res.status(200).send({ message: messages.deleteDeadPerson });
 };
 
-module.exports = { getAllDeadPeople, addNewDeadPerson, updateDeadPerson, deleteDeadPerson };
+module.exports = {
+  getAllDeadPeople,
+  addNewDeadPerson,
+  updateDeadPerson,
+  deleteDeadPerson,
+};
