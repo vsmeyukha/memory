@@ -1,28 +1,32 @@
-// шифрование пароля и генерация токена
+// ! шифрование пароля и генерация токена
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-// тексты
+// ! тексты
 const errors = require('../constants/errors');
 const messages = require('../constants/messages');
 
-// ошибочки
+// ! ошибочки
 const ConflictError = require('../errors/ConflictError');
 const AuthorizationError = require('../errors/authorizationError');
 const NotFoundError = require('../errors/notFoundError');
 const CastError = require('../errors/castError');
 
-// модель
+// ! модель
 const User = require('../models/user');
 
+// ? по возможности используем синтаксис async await
+
+// ! получаем всех пользователей
 const getAllUsers = async (req, res, next) => {
   const allUsers = await User.find({});
   return res.status(200).send(allUsers);
 };
 
+// ! регистрируемся
 const register = async (req, res, next) => {
   try {
-    // деструктурируем тело ответа, присваиваем поля ответа переменным
+    // ? деструктурируем тело запроса, присваиваем поля ответа переменным
     const {
       name,
       surname,
@@ -31,11 +35,11 @@ const register = async (req, res, next) => {
       password,
     } = req.body;
 
-    // шифруем пароль
+    // ? шифруем пароль
     const encryptedPassword = await bcrypt.hash(password, 10);
 
-    // создаем нового юзера,
-    // только вместо введенного пользователем пароля сохраняем в базу зашифрованный
+    // ? создаем нового юзера,
+    // ? только вместо введенного пользователем пароля сохраняем в базу зашифрованный
     const userWithEncryptedPassword = await User.create({
       name,
       surname,
@@ -44,6 +48,7 @@ const register = async (req, res, next) => {
       password: encryptedPassword,
     });
 
+    // ? а в ответе не возвращаем зашифрованный пароль, он уходит только в базу
     return res.status(200).send({
       name: userWithEncryptedPassword.name,
       surname: userWithEncryptedPassword.surname,
@@ -58,30 +63,46 @@ const register = async (req, res, next) => {
   }
 };
 
+// ! логинимся
 const login = async (req, res, next) => {
   try {
     const { NODE_ENV, JWT_SECRET = 'very-secret-key' } = process.env;
 
+    // ? деструктурируем запрос
     const { email, password } = req.body;
 
+    // ? ищем юзера по емэйлу
     const userFoundByEmail = await User.findOne({ email }).select('+password');
 
+    // ? если не найдем, выбрасываем ошибку авторизации - неправильный емэйл или пассворд
     if (!userFoundByEmail) {
       throw new AuthorizationError(errors.authorizationEmailOrPassword);
     }
 
+    // ? если емэйл совпал, сравниваем введенный пользователем пароль с хранящимся в базе паролем
     const matchedPassword = await bcrypt.compare(password, userFoundByEmail.password);
 
+    // ? если не совпал, выбрасываем ошибку авторизации
     if (!matchedPassword) {
       throw new AuthorizationError(errors.authorizationEmailOrPassword);
     }
 
+    // ? если все совпало, и в базе найден такой емэйл с таким паролем, то создаем токен.
+    // ? в токен записываем только айдишник пользователя.этого вполне достаточно для идентификации.
+    // ? и не приходится гонять большие пакеты данных туда-сюда
+    // ? задаем срок годности токена. обычно 7 дней.
+    // ? в это время чел может заходить на сайт, не перезалогиниваясь.
+    // ? когда токен протухнет, придется заново ввести логин и пароль
     const token = jwt.sign(
       { _id: userFoundByEmail._id },
       NODE_ENV === 'development' ? JWT_SECRET : 'very-secret-key',
       { expiresIn: '7d' },
     );
 
+    // ? в ответе возвращаем куку, в нее записываем токен.
+    // ? также задаем срок хранения куки, в нашем случае он совпадает со сроком годности токена.
+    // ? httpOnly: true очень важно прописать, поскольку это обеспечивает безопасность куки и сайта.
+    // ? из JS теперь не достанешь куку
     return res.cookie('jwt', token, {
       maxAge: 3600000 * 24 * 7,
       httpOnly: true,
@@ -100,7 +121,9 @@ const login = async (req, res, next) => {
   }
 };
 
-// посмотреть, как переписать на async await функции с orFail
+// ! ищем конкретного пользователя.
+// ! применяется, когда, например, заходим в личный кабинет. отдает данные юзера на фронт
+// ? посмотреть, как переписать на async await функции с orFail
 const getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
     .orFail(new NotFoundError(errors.notFoundUser))
@@ -113,6 +136,8 @@ const getCurrentUser = (req, res, next) => {
     });
 };
 
+// ! обновление данных о юзере. работает также, как и поиск конкретного.
+// ! только записывает новые данные в базу
 const updateUser = (req, res, next) => {
   const {
     name,
@@ -149,6 +174,8 @@ const updateUser = (req, res, next) => {
     });
 };
 
+// ! разлогин. в токен записываем пустую строку, токен отправляем в куку
+// ! теперь уже без всяких сроков годности, ибо по факту ничего в токене и не хранится
 const signOut = (req, res) => {
   const token = '';
 
@@ -160,6 +187,11 @@ const signOut = (req, res) => {
     });
 };
 
+// ! удаляем пользователя
+// ! ищем по айди и удаляем из базы
+// ! в токен записываем пустую строку
+// ! отправляем токен в куку
+// ! отправляем ответ, что ваш акк удален
 const deleteUser = async (req, res, next) => {
   await User.findByIdAndRemove(req.user._id);
 

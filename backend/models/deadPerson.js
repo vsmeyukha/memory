@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const validation = require('validator');
 const errors = require('../constants/errors');
 
+const memory = require('./memory');
+
 const deadPersonSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -45,6 +47,7 @@ const deadPersonSchema = new mongoose.Schema({
     ref: 'user',
     required: true,
   },
+  // memory: [memory],
 });
 
 module.exports = mongoose.model('deadPerson', deadPersonSchema);
