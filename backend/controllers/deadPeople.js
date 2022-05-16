@@ -47,6 +47,22 @@ const deleteDeadPerson = async (req, res, next) => {
   return res.status(200).send({ message: messages.deleteDeadPerson });
 };
 
+const uploadMainPhoto = async (req, res, next) => {
+  const photoLink = { mainPhoto: req.file.path };
+
+  const deadPersonWithMainPhoto = await DeadPerson.findByIdAndUpdate(
+    req.params.deadPersonId,
+    { mainPhoto: req.file.path },
+    {
+      new: true,
+      runValidators: true,
+      upsert: true,
+    },
+  );
+
+  return res.status(200).send(deadPersonWithMainPhoto);
+};
+
 // const addAMemory = async (req, res, next) => {
 //   const { memory } = req.body.memory;
 
@@ -73,4 +89,5 @@ module.exports = {
   addNewDeadPerson,
   updateDeadPerson,
   deleteDeadPerson,
+  uploadMainPhoto,
 };

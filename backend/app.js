@@ -16,8 +16,6 @@ const app = express();
 // ? useFindAndModify: false,
 // todo узнать, почему
 
-// todo - создать схемы и модели
-// todo - создать индекс емэйла в компасе, чтобы он был уникальным
 mongoose.connect('mongodb://localhost:27017/memorydb', {
   useNewUrlParser: true,
   useUnifiedTopology: true,

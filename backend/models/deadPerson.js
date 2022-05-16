@@ -47,6 +47,9 @@ const deadPersonSchema = new mongoose.Schema({
     ref: 'user',
     required: true,
   },
+  mainPhoto: {
+    type: String,
+  },
   // memory: [memory],
 });
 
