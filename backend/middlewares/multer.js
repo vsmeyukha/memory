@@ -1,4 +1,7 @@
 const multer = require('multer');
+const mongoose = require('mongoose');
+
+const generateFileName = (file) => `${mongoose.Types.ObjectId().toString()}.${file.mimetype.slice(6)}`;
 
 const mainPhotoStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -17,7 +20,7 @@ const mainPhotoStorage = multer.diskStorage({
       ? null
       : new Error('wrong file');
 
-    cb(error, file.originalname);
+    cb(error, `${generateFileName(file)}`);
   },
 });
 
@@ -38,7 +41,7 @@ const mainGalleryStorage = multer.diskStorage({
       ? null
       : new Error('wrong file');
 
-    cb(error, file.originalname);
+    cb(error, `${generateFileName(file)}`);
   },
 });
 

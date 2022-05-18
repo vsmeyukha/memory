@@ -30,6 +30,8 @@ const {
   deleteComment,
 } = require('../controllers/comments');
 
+const memoryRouter = require('./memory');
+
 router.get('/', asyncHandler(getAllDeadPeople));
 
 router.get('/:deadPersonId', asyncHandler(getDeadPerson));
@@ -58,15 +60,17 @@ router.patch(
 
 // ! роутинг воспоминаний
 
-router.post('/:deadPersonId', asyncHandler(addNewMemory));
+// router.post('/:deadPersonId', asyncHandler(addNewMemory));
 
-router.get('/:deadPersonId/memories', asyncHandler(getAllMemoriesAboutOnePerson));
+// router.get('/:deadPersonId/memories', asyncHandler(getAllMemoriesAboutOnePerson));
 
-router.delete('/:deadPersonId/memories/:memoryId', asyncHandler(deleteMemory));
+// router.delete('/:deadPersonId/memories/:memoryId', asyncHandler(deleteMemory));
 
-router.get('/:deadPersonId/memories/:memoryId', asyncHandler(getOneMemory));
+// router.get('/:deadPersonId/memories/:memoryId', asyncHandler(getOneMemory));
 
-router.patch('/:deadPersonId/memories/:memoryId', asyncHandler(updateMemory));
+// router.patch('/:deadPersonId/memories/:memoryId', asyncHandler(updateMemory));
+
+router.use('/:deadPersonId', memoryRouter);
 
 // ! роутинг комментариев к воспоминаниям
 

@@ -1,4 +1,4 @@
-const router = require('express').Router();
+const router = require('express').Router({ mergeParams: true });
 const asyncHandler = require('express-async-handler');
 
 const {
@@ -9,7 +9,7 @@ const {
   updateMemory,
 } = require('../controllers/memories');
 
-router.post('/', asyncHandler(addNewMemory));
+router.post('/add-new-memory', asyncHandler(addNewMemory));
 
 router.get('/memories', asyncHandler(getAllMemoriesAboutOnePerson));
 

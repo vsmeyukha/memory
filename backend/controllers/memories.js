@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Memory = require('../models/memory');
 const messages = require('../constants/messages');
 const { createMemoryPhotosFolder } = require('../middlewares/creatingFolders');
@@ -13,6 +14,7 @@ const addNewMemory = async (req, res, next) => {
   // ? создаем новый объект воспоминания:
   // ?все поля, что были переданы в запросе, + owner и affiliation
   const memoryWithOwnerAndAffiliation = {
+    _id: mongoose.Types.ObjectId(),
     ...req.body,
     owner,
     affiliation: deadPerson,
@@ -29,7 +31,6 @@ const addNewMemory = async (req, res, next) => {
 const addNewMemoryWithPhoto = (req, res, next) => {
   const newMemory = addNewMemory(req, res, next);
   createMemoryPhotosFolder(req, res, next, newMemory);
-  
 };
 
 // ! получаем все воспоминания об одном человеке

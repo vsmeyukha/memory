@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const { localTimeWithoutSeconds } = require('../utils/time');
+
 const memorySchema = new mongoose.Schema({
   description: {
     type: String,
@@ -17,8 +19,9 @@ const memorySchema = new mongoose.Schema({
     required: true,
   },
   createdAt: {
-    type: Date,
-    default: Date.now,
+    type: String,
+    default: localTimeWithoutSeconds,
+    required: true,
   },
   reaction: [{
     type: mongoose.Schema.Types.ObjectId,
