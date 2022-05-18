@@ -1,5 +1,6 @@
 const Memory = require('../models/memory');
 const messages = require('../constants/messages');
+const { createMemoryPhotosFolder } = require('../middlewares/creatingFolders');
 
 // ! создаем воспоминание
 const addNewMemory = async (req, res, next) => {
@@ -22,6 +23,13 @@ const addNewMemory = async (req, res, next) => {
 
   // ? отправляем созданное воспоминание на фронт
   return res.status(200).send(newMemory);
+};
+
+// ! создаем воспоминание с фото
+const addNewMemoryWithPhoto = (req, res, next) => {
+  const newMemory = addNewMemory(req, res, next);
+  createMemoryPhotosFolder(req, res, next, newMemory);
+  
 };
 
 // ! получаем все воспоминания об одном человеке

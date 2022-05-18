@@ -50,6 +50,9 @@ const deadPersonSchema = new mongoose.Schema({
   mainPhoto: {
     type: String,
   },
+  mainGallery: [{
+    type: String,
+  }], // ? как ограничить длину массива?
   // memory: [memory],
 });
 

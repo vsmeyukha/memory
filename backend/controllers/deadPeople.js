@@ -48,8 +48,6 @@ const deleteDeadPerson = async (req, res, next) => {
 };
 
 const uploadMainPhoto = async (req, res, next) => {
-  const photoLink = { mainPhoto: req.file.path };
-
   const deadPersonWithMainPhoto = await DeadPerson.findByIdAndUpdate(
     req.params.deadPersonId,
     { mainPhoto: req.file.path },
@@ -61,6 +59,28 @@ const uploadMainPhoto = async (req, res, next) => {
   );
 
   return res.status(200).send(deadPersonWithMainPhoto);
+};
+
+const uploadMainGallery = async (req, res, next) => {
+  const deadMan = await DeadPerson.findById(req.params.deadPersonId);
+
+  const photoLinks = deadMan.mainGallery;
+
+  for (let i = 0; i < req.files.length; i++) {
+    photoLinks.push(req.files[i].path);
+  }
+
+  const deadPersonWithMainGallery = await DeadPerson.findByIdAndUpdate(
+    req.params.deadPersonId,
+    { mainGallery: photoLinks },
+    {
+      new: true,
+      runValidators: true,
+      upsert: true,
+    },
+  );
+
+  return res.status(200).send(deadPersonWithMainGallery);
 };
 
 // const addAMemory = async (req, res, next) => {
@@ -90,4 +110,5 @@ module.exports = {
   updateDeadPerson,
   deleteDeadPerson,
   uploadMainPhoto,
+  uploadMainGallery,
 };

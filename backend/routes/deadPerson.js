@@ -1,8 +1,8 @@
 const router = require('express').Router();
 const asyncHandler = require('express-async-handler');
-const upload = require('../middlewares/multer');
 
-const { createMainPhotoFolder } = require('../middlewares/creatingFolders');
+const multer = require('../middlewares/multer');
+const { createMainPhotoFolder, createMainGalleryFolder } = require('../middlewares/creatingFolders');
 
 const {
   getAllDeadPeople,
@@ -11,6 +11,7 @@ const {
   updateDeadPerson,
   deleteDeadPerson,
   uploadMainPhoto,
+  uploadMainGallery,
 } = require('../controllers/deadPeople');
 
 const {
@@ -41,7 +42,19 @@ router.delete('/:deadPersonId', asyncHandler(deleteDeadPerson));
 
 // ! Работа с фотографиями
 
-router.patch('/:deadPersonId/main-photo', createMainPhotoFolder, upload.single('main-photo'), asyncHandler(uploadMainPhoto));
+router.patch(
+  '/:deadPersonId/main-photo',
+  createMainPhotoFolder,
+  multer.uploadMainPhoto.single('main-photo'),
+  asyncHandler(uploadMainPhoto),
+);
+
+router.patch(
+  '/:deadPersonId/main-gallery',
+  createMainGalleryFolder,
+  multer.uploadMainGallery.array('main-gallery', 12),
+  asyncHandler(uploadMainGallery),
+);
 
 // ! роутинг воспоминаний
 
