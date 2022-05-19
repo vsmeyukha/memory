@@ -2,31 +2,52 @@ const mongoose = require('mongoose');
 
 const { localTimeWithoutSeconds } = require('../utils/time');
 
-const memorySchema = new mongoose.Schema({
-  description: {
-    type: String,
-    minlength: 10,
-    required: true,
+const memorySchema = new mongoose.Schema(
+  {
+    description: {
+      type: String,
+      minlength: 10,
+      required: true,
+    },
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'user',
+      required: true,
+    },
+    affiliation: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'deadPerson',
+      required: true,
+    },
+    createdAt: {
+      type: String,
+      // default: localTimeWithoutSeconds,
+      // required: true,
+    },
+    edited: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    updatedAt: {
+      type: String,
+      // default: localTimeWithoutSeconds,
+      // required: true,
+    },
+    timezone: { type: String },
+    reaction: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'user',
+    }],
   },
-  owner: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'user',
-    required: true,
+  {
+    timestamps: { currentTime: () => localTimeWithoutSeconds },
   },
-  affiliation: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'deadPerson',
-    required: true,
-  },
-  createdAt: {
-    type: String,
-    default: localTimeWithoutSeconds,
-    required: true,
-  },
-  reaction: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'user',
-  }],
-});
+);
+
+// ? в этой модели устанавливаем время через встроенный функционал монгуса
+// ? (по-другому в модели комментария)
+
+// ! время редактирования обновляется невпопад обсудить
 
 module.exports = mongoose.model('memory', memorySchema);

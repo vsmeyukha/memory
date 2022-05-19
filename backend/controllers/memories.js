@@ -18,6 +18,7 @@ const addNewMemory = async (req, res, next) => {
     ...req.body,
     owner,
     affiliation: deadPerson,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
   };
 
   // ? создаем новую запись в базе данных
@@ -63,7 +64,11 @@ const getOneMemory = async (req, res, next) => {
 const updateMemory = async (req, res, next) => {
   const updatedMemory = await Memory.findByIdAndUpdate(
     req.params.memoryId,
-    req.body,
+    {
+      ...req.body,
+      edited: true,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    },
     {
       new: true,
       runValidators: true,

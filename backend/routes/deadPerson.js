@@ -2,6 +2,9 @@ const router = require('express').Router();
 const asyncHandler = require('express-async-handler');
 
 const multer = require('../middlewares/multer');
+
+const memoryRouter = require('./memory');
+
 const { createMainPhotoFolder, createMainGalleryFolder } = require('../middlewares/creatingFolders');
 
 const {
@@ -13,24 +16,6 @@ const {
   uploadMainPhoto,
   uploadMainGallery,
 } = require('../controllers/deadPeople');
-
-const {
-  addNewMemory,
-  getAllMemoriesAboutOnePerson,
-  deleteMemory,
-  getOneMemory,
-  updateMemory,
-} = require('../controllers/memories');
-
-const {
-  addNewComment,
-  getAllCommentsToOneMemory,
-  getCurrentComment,
-  updateComment,
-  deleteComment,
-} = require('../controllers/comments');
-
-const memoryRouter = require('./memory');
 
 router.get('/', asyncHandler(getAllDeadPeople));
 
@@ -59,34 +44,8 @@ router.patch(
 );
 
 // ! роутинг воспоминаний
-
-// router.post('/:deadPersonId', asyncHandler(addNewMemory));
-
-// router.get('/:deadPersonId/memories', asyncHandler(getAllMemoriesAboutOnePerson));
-
-// router.delete('/:deadPersonId/memories/:memoryId', asyncHandler(deleteMemory));
-
-// router.get('/:deadPersonId/memories/:memoryId', asyncHandler(getOneMemory));
-
-// router.patch('/:deadPersonId/memories/:memoryId', asyncHandler(updateMemory));
+// ! и комментариев к ним - роутер комментов подключен в роутере воспоминаний
 
 router.use('/:deadPersonId', memoryRouter);
-
-// ! роутинг комментариев к воспоминаниям
-
-router.post('/:deadPersonId/memories/:memoryId', asyncHandler(addNewComment));
-
-router.get('/:deadPersonId/memories/:memoryId/comments', asyncHandler(getAllCommentsToOneMemory));
-
-router.get('/:deadPersonId/memories/:memoryId/comments/:commentId', asyncHandler(getCurrentComment));
-
-router.patch('/:deadPersonId/memories/:memoryId/comments/:commentId', asyncHandler(updateComment));
-
-router.delete('/:deadPersonId/memories/:memoryId/comments/:commentId', asyncHandler(deleteComment));
-
-// ! когда-нибудь разобраться:
-// !не работает роутинг воспоминаний, если вынести роуты воспоминаний в отдельный файл
-// ! например, вот так - router.use('/:deadPersonId', memoryRouter);
-// ! не подсасывает данные из req.params.deadPersonId
 
 module.exports = router;
