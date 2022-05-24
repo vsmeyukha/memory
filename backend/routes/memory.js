@@ -5,6 +5,7 @@ const commentsRouter = require('./comments');
 
 const {
   addNewMemory,
+  addNewMemoryWithPhoto,
   getAllMemoriesAboutOnePerson,
   deleteMemory,
   getOneMemory,
@@ -12,6 +13,12 @@ const {
 } = require('../controllers/memories');
 
 router.post('/add-new-memory', asyncHandler(addNewMemory));
+
+// ? непонятно, как развести по урлу друг с другом создание простого воспоминания
+// ? и воспоминания с фото
+// ? ведь начинается у них все одинаково
+
+router.post('/add-new-memory-with-photo', asyncHandler(addNewMemoryWithPhoto));
 
 router.get('/memories', asyncHandler(getAllMemoriesAboutOnePerson));
 

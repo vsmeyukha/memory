@@ -45,7 +45,29 @@ const mainGalleryStorage = multer.diskStorage({
   },
 });
 
+const memoryPhotoStorage = multer.diskStorage({
+  destination: (req, file, cb, memory) => {
+    const error = file.mimetype === 'image/jpeg'
+      || file.mimetype === 'image/png'
+      || file.mimetype === 'image/webp'
+      ? null
+      : new Error('wrong file');
+
+    cb(error, `./uploads/${req.params.deadPersonId}/memories/user${req.user._id}/memory${memory}`);
+  },
+  filename: (req, file, cb) => {
+    const error = file.mimetype === 'image/jpeg'
+      || file.mimetype === 'image/png'
+      || file.mimetype === 'image/webp'
+      ? null
+      : new Error('wrong file');
+
+    cb(error, `${generateFileName(file)}`);
+  },
+});
+
 const uploadMainPhoto = multer({ storage: mainPhotoStorage });
 const uploadMainGallery = multer({ storage: mainGalleryStorage });
+const uploadMemoryPhoto = multer({ storage: memoryPhotoStorage });
 
-module.exports = { uploadMainPhoto, uploadMainGallery };
+module.exports = { uploadMainPhoto, uploadMainGallery, uploadMemoryPhoto };

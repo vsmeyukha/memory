@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
+const asyncHandler = require('express-async-handler');
 const Memory = require('../models/memory');
 const messages = require('../constants/messages');
 const { createMemoryPhotosFolder } = require('../middlewares/creatingFolders');
+const { uploadMemoryPhoto } = require('../middlewares/multer');
 
 // ! создаем воспоминание
 const addNewMemory = async (req, res, next) => {
@@ -11,10 +13,13 @@ const addNewMemory = async (req, res, next) => {
   // ? сохраняем айдишник умершего человека в переменную
   const deadPerson = req.params.deadPersonId;
 
+  // ? присваиваем посту _id случайно сгенерированное монгой значение
+  const _id = mongoose.Types.ObjectId();
+
   // ? создаем новый объект воспоминания:
   // ?все поля, что были переданы в запросе, + owner и affiliation
   const memoryWithOwnerAndAffiliation = {
-    _id: mongoose.Types.ObjectId(),
+    _id,
     ...req.body,
     owner,
     affiliation: deadPerson,
@@ -29,9 +34,64 @@ const addNewMemory = async (req, res, next) => {
 };
 
 // ! создаем воспоминание с фото
-const addNewMemoryWithPhoto = (req, res, next) => {
-  const newMemory = addNewMemory(req, res, next);
-  createMemoryPhotosFolder(req, res, next, newMemory);
+// const addNewMemoryWithPhoto = async (req, res, next) => {
+//   const owner = req.user._id;
+//   const affiliation = req.params.deadPersonId;
+//   const _id = mongoose.Types.ObjectId();
+
+//   // ? создаем новый объект воспоминания:
+//   // ? все поля, что были переданы в запросе, + owner и affiliation
+//   const memoryWithOwnerAndAffiliation = {
+//     _id,
+//     owner,
+//     affiliation,
+//     ...req.body,
+//     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+//   };
+
+//   // ? создаем новую запись в базе данных
+//   await Memory.create(memoryWithOwnerAndAffiliation);
+
+//   await createMemoryPhotosFolder(req, res, next, _id);
+
+//   uploadMemoryPhoto.single('memory-photo', _id);
+
+//   const newMemoryWithPhoto = await Memory.findByIdAndUpdate(
+//     _id,
+//     { photo: req.file.path },
+//     {
+//       new: true,
+//       runValidators: true,
+//       upsert: true,
+//     },
+//   );
+
+//   return res.status(200).send(newMemoryWithPhoto);
+// };
+
+const addNewMemoryWithPhoto = async (req, res, next) => {
+  const owner = req.user._id;
+  const affiliation = req.params.deadPersonId;
+  const _id = mongoose.Types.ObjectId();
+
+  await createMemoryPhotosFolder(req, res, next, _id);
+  uploadMemoryPhoto.single('memory-photo', _id);
+
+  // ? создаем новый объект воспоминания:
+  // ? все поля, что были переданы в запросе, + owner и affiliation
+  const memoryWithPhoto = {
+    _id,
+    owner,
+    affiliation,
+    photo: req.file.path,
+    ...req.body,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  };
+
+  // ? создаем новую запись в базе данных
+  const newMemoryWithPhoto = await Memory.create(memoryWithPhoto);
+
+  return res.status(200).send(newMemoryWithPhoto);
 };
 
 // ! получаем все воспоминания об одном человеке
@@ -81,6 +141,7 @@ const updateMemory = async (req, res, next) => {
 
 module.exports = {
   addNewMemory,
+  addNewMemoryWithPhoto,
   getAllMemoriesAboutOnePerson,
   deleteMemory,
   getOneMemory,

@@ -6,8 +6,9 @@ const memorySchema = new mongoose.Schema(
   {
     description: {
       type: String,
-      minlength: 10,
-      required: true,
+      // minlength: 10,
+      // required: true,
+      default: '',
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
@@ -18,6 +19,9 @@ const memorySchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'deadPerson',
       required: true,
+    },
+    photo: {
+      type: String,
     },
     createdAt: {
       type: String,
