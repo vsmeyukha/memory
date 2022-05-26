@@ -1,29 +1,30 @@
 const mongoose = require('mongoose');
 const Memory = require('../models/memory');
 const messages = require('../constants/messages');
-const { createMemoryPhotosFolder } = require('../middlewares/creatingFolders');
-const { uploadMemoryPhoto } = require('../middlewares/multer');
 
-// ! создаем воспоминание
-const addNewMemory = async (req, res, next) => {
+// ? создаем объект мемори, который будем переиспользовать несоклько раз в разных функциях
+const getMemoryObject = (req, res, next) => {
   // ? сохраняем айдишник пользователя в переменную
   const owner = req.user._id;
 
   // ? сохраняем айдишник умершего человека в переменную
   const deadPerson = req.params.deadPersonId;
 
-  // ? присваиваем посту _id случайно сгенерированное монгой значение
-  const _id = mongoose.Types.ObjectId();
-
   // ? создаем новый объект воспоминания:
-  // ?все поля, что были переданы в запросе, + owner и affiliation
+  // ? все поля, что были переданы в запросе, + owner и affiliation
   const memoryWithOwnerAndAffiliation = {
-    _id,
     ...req.body,
     owner,
     affiliation: deadPerson,
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
   };
+
+  return memoryWithOwnerAndAffiliation;
+};
+
+// ! создаем воспоминание
+const addNewMemory = async (req, res, next) => {
+  const memoryWithOwnerAndAffiliation = getMemoryObject(req, res, next);
 
   // ? создаем новую запись в базе данных
   const newMemory = await Memory.create(memoryWithOwnerAndAffiliation);
@@ -33,54 +34,14 @@ const addNewMemory = async (req, res, next) => {
 };
 
 // ! создаем воспоминание с фото
-// const addNewMemoryWithPhoto = async (req, res, next) => {
-//   const owner = req.user._id;
-//   const affiliation = req.params.deadPersonId;
-//   const _id = mongoose.Types.ObjectId();
-
-//   // ? создаем новый объект воспоминания:
-//   // ? все поля, что были переданы в запросе, + owner и affiliation
-//   const memoryWithOwnerAndAffiliation = {
-//     _id,
-//     owner,
-//     affiliation,
-//     ...req.body,
-//     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-//   };
-
-//   // ? создаем новую запись в базе данных
-//   await Memory.create(memoryWithOwnerAndAffiliation);
-
-//   await createMemoryPhotosFolder(req, res, next, _id);
-
-//   uploadMemoryPhoto.single('memory-photo', _id);
-
-//   const newMemoryWithPhoto = await Memory.findByIdAndUpdate(
-//     _id,
-//     { photo: req.file.path },
-//     {
-//       new: true,
-//       runValidators: true,
-//       upsert: true,
-//     },
-//   );
-
-//   return res.status(200).send(newMemoryWithPhoto);
-// };
-
 const addNewMemoryWithPhoto = async (req, res, next) => {
-  const owner = req.user._id;
-  const affiliation = req.params.deadPersonId;
+  const memoryWithOwnerAndAffiliation = getMemoryObject(req, res, next);
 
   // ? создаем новый объект воспоминания:
   // ? все поля, что были переданы в запросе, + owner и affiliation
   const memoryWithPhoto = {
-    _id: req.memoryId,
-    owner,
-    affiliation,
+    ...memoryWithOwnerAndAffiliation,
     photo: req.file.path,
-    ...req.body,
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
   };
 
   // ? создаем новую запись в базе данных
@@ -91,12 +52,9 @@ const addNewMemoryWithPhoto = async (req, res, next) => {
 
 // ! получаем все воспоминания об одном человеке
 const getAllMemoriesAboutOnePerson = async (req, res, next) => {
-  // ? сохраняем айдишник умершего человека в переменную
-  const deadPerson = req.params.deadPersonId;
-
   // ? ищем в базе все воспоминания, относящиеся к одному человеку
   // ? то есть те, у которых в поле affiliation айдишник, переданный в req.params.deadPersonId
-  const allMemoriesAboutOnePerson = await Memory.find({ affiliation: deadPerson });
+  const allMemoriesAboutOnePerson = await Memory.find({ affiliation: req.params.deadPersonId });
 
   // ? возвращаем все воспоминания на фронт
   return res.status(200).send(allMemoriesAboutOnePerson);
@@ -122,7 +80,6 @@ const updateMemory = async (req, res, next) => {
     {
       ...req.body,
       edited: true,
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     },
     {
       new: true,
