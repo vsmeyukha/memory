@@ -7,7 +7,7 @@ const memorySchema = new mongoose.Schema(
     description: {
       type: String,
       // minlength: 10,
-      // required: true,
+      required: true,
       default: '',
     },
     owner: {

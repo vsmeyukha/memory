@@ -3,6 +3,10 @@ const asyncHandler = require('express-async-handler');
 
 const commentsRouter = require('./comments');
 
+const { uploadMemoryPhoto } = require('../middlewares/multer');
+const { createMemoryPhotosFolder } = require('../middlewares/creatingFolders');
+const createMemoryId = require('../middlewares/createMemoryId');
+
 const {
   addNewMemory,
   addNewMemoryWithPhoto,
@@ -18,7 +22,13 @@ router.post('/add-new-memory', asyncHandler(addNewMemory));
 // ? и воспоминания с фото
 // ? ведь начинается у них все одинаково
 
-router.post('/add-new-memory-with-photo', asyncHandler(addNewMemoryWithPhoto));
+router.post(
+  '/add-new-memory-with-photo',
+  createMemoryId,
+  createMemoryPhotosFolder,
+  uploadMemoryPhoto.single('memory-photo'),
+  asyncHandler(addNewMemoryWithPhoto),
+);
 
 router.get('/memories', asyncHandler(getAllMemoriesAboutOnePerson));
 

@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const asyncHandler = require('express-async-handler');
 const Memory = require('../models/memory');
 const messages = require('../constants/messages');
 const { createMemoryPhotosFolder } = require('../middlewares/creatingFolders');
@@ -72,15 +71,11 @@ const addNewMemory = async (req, res, next) => {
 const addNewMemoryWithPhoto = async (req, res, next) => {
   const owner = req.user._id;
   const affiliation = req.params.deadPersonId;
-  const _id = mongoose.Types.ObjectId();
-
-  await createMemoryPhotosFolder(req, res, next, _id);
-  uploadMemoryPhoto.single('memory-photo', _id);
 
   // ? создаем новый объект воспоминания:
   // ? все поля, что были переданы в запросе, + owner и affiliation
   const memoryWithPhoto = {
-    _id,
+    _id: req.memoryId,
     owner,
     affiliation,
     photo: req.file.path,

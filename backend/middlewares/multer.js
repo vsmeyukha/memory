@@ -46,14 +46,14 @@ const mainGalleryStorage = multer.diskStorage({
 });
 
 const memoryPhotoStorage = multer.diskStorage({
-  destination: (req, file, cb, memory) => {
+  destination: (req, file, cb) => {
     const error = file.mimetype === 'image/jpeg'
       || file.mimetype === 'image/png'
       || file.mimetype === 'image/webp'
       ? null
       : new Error('wrong file');
 
-    cb(error, `./uploads/${req.params.deadPersonId}/memories/user${req.user._id}/memory${memory}`);
+    cb(error, `./uploads/${req.params.deadPersonId}/memories/user${req.user._id}/memory${req.memoryId}`);
   },
   filename: (req, file, cb) => {
     const error = file.mimetype === 'image/jpeg'
