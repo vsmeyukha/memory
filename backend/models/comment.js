@@ -1,43 +1,19 @@
 const mongoose = require('mongoose');
+const anyPostSchema = require('../constants/schemas/anyPostSchema');
 
-const { localTimeWithoutSeconds } = require('../utils/time');
-
-const commentSchema = new mongoose.Schema({
-  description: {
-    type: String,
-    required: true,
-  },
-  owner: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'user',
-    required: true,
-  },
+const obj = {
+  ...anyPostSchema,
   affiliation: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'memory',
-    required: true,
+    ...anyPostSchema.affiliation,
   },
-  createdAt: {
-    type: String,
-    default: localTimeWithoutSeconds,
-    required: true,
-  },
-  reaction: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'user',
-  }],
-  edited: {
-    type: Boolean,
-    required: true,
-    default: false,
-  },
-  editedAt: {
-    type: String,
-    default: '',
-  },
-  timezone: { type: String },
-});
+};
 
-// ? в этой модели устанавливаем время самостоятельным путем
+obj.affiliation.ref = 'memory';
+
+const commentSchema = new mongoose.Schema(
+  {
+    ...obj,
+  },
+);
 
 module.exports = mongoose.model('comment', commentSchema);
