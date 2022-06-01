@@ -31,6 +31,9 @@ const register = async (req, res, next) => {
       name,
       surname,
       patronymic,
+      sex,
+      dateOfBirth,
+      mainPhoto,
       email,
       password,
     } = req.body;
@@ -44,6 +47,9 @@ const register = async (req, res, next) => {
       name,
       surname,
       patronymic,
+      sex,
+      dateOfBirth,
+      mainPhoto,
       email,
       password: encryptedPassword,
     });
@@ -53,6 +59,9 @@ const register = async (req, res, next) => {
       name: userWithEncryptedPassword.name,
       surname: userWithEncryptedPassword.surname,
       patronymic: userWithEncryptedPassword.patronymic,
+      sex: userWithEncryptedPassword.sex,
+      dateOfBirth: userWithEncryptedPassword.dateOfBirth,
+      mainPhoto: userWithEncryptedPassword.mainPhoto,
       email: userWithEncryptedPassword.email,
     });
   } catch (err) {
@@ -144,6 +153,9 @@ const updateUser = (req, res, next) => {
     surname,
     patronymic,
     email,
+    sex,
+    dateOfBirth,
+    mainPhoto,
   } = req.body;
 
   const { _id = '' } = req.user;
@@ -155,6 +167,9 @@ const updateUser = (req, res, next) => {
       surname,
       patronymic,
       email,
+      sex,
+      dateOfBirth,
+      mainPhoto,
     },
     {
       new: true,

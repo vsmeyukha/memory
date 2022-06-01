@@ -1,5 +1,3 @@
-const mongoose = require('mongoose');
-
 const { localTimeWithoutSeconds } = require('../../utils/time');
 
 const anyPersonSchema = {

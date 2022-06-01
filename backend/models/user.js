@@ -2,23 +2,10 @@ const mongoose = require('mongoose');
 const validation = require('validator');
 const errors = require('../constants/errors');
 
+const anyPersonSchema = require('../constants/schemas/anyPersonSchema');
+
 const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    minlength: 2,
-    maxlength: 30,
-    required: true,
-  },
-  surname: {
-    type: String,
-    minlength: 2,
-    maxlength: 30,
-  },
-  patronymic: {
-    type: String,
-    minlength: 2,
-    maxlength: 30,
-  },
+  ...anyPersonSchema,
   email: {
     type: String,
     required: true,
