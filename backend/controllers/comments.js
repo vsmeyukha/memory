@@ -36,7 +36,7 @@ const updateComment = async (req, res, next) => {
     {
       ...req.body,
       edited: true,
-      editedAt: localTimeWithoutSeconds,
+      editedAt: localTimeWithoutSeconds(),
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     },
     {

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Memory = require('../models/memory');
 const messages = require('../constants/messages');
+const { localTimeWithoutSeconds } = require('../utils/time');
 
 // ? создаем объект мемори, который будем переиспользовать несоклько раз в разных функциях
 const getMemoryObject = (req, res, next) => {
@@ -80,6 +81,7 @@ const updateMemory = async (req, res, next) => {
     {
       ...req.body,
       edited: true,
+      editedAt: localTimeWithoutSeconds(),
     },
     {
       new: true,

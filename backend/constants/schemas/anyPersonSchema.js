@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const localTimeWithoutSeconds = require('../../utils/time');
+const { localTimeWithoutSeconds } = require('../../utils/time');
 
 const anyPersonSchema = {
   name: {
@@ -33,7 +33,7 @@ const anyPersonSchema = {
   },
   createdAt: {
     type: String,
-    default: localTimeWithoutSeconds,
+    default: localTimeWithoutSeconds(),
     required: true,
   },
 };

@@ -22,7 +22,7 @@ const anyPostSchema = {
   },
   createdAt: {
     type: String,
-    default: localTimeWithoutSeconds,
+    default: localTimeWithoutSeconds(),
     required: true,
   },
   reaction: [{

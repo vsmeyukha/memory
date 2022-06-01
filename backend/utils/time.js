@@ -1,4 +1,3 @@
-const date = new Date();
-const localTimeWithoutSeconds = date.toLocaleString().slice(0, -3);
+const localTimeWithoutSeconds = () => new Date().toLocaleString().slice(0, -3);
 
 module.exports = { localTimeWithoutSeconds };
