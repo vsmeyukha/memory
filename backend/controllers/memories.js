@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const Memory = require('../models/memory');
 const messages = require('../constants/messages');
 const { localTimeWithoutSeconds } = require('../utils/time');
@@ -51,6 +50,13 @@ const addNewMemoryWithPhoto = async (req, res, next) => {
   return res.status(200).send(newMemoryWithPhoto);
 };
 
+// ! получаем одно воспоминание
+const getOneMemory = async (req, res, next) => {
+  const currentMemory = await Memory.findById(req.params.memoryId);
+
+  return res.status(200).send(currentMemory);
+};
+
 // ! получаем все воспоминания об одном человеке
 const getAllMemoriesAboutOnePerson = async (req, res, next) => {
   // ? ищем в базе все воспоминания, относящиеся к одному человеку
@@ -65,13 +71,6 @@ const getAllMemoriesAboutOnePerson = async (req, res, next) => {
 const deleteMemory = async (req, res, next) => {
   await Memory.findByIdAndRemove(req.params.memoryId);
   return res.status(200).send({ message: messages.deleteMemory });
-};
-
-// ! получаем одно воспоминание
-const getOneMemory = async (req, res, next) => {
-  const currentMemory = await Memory.findById(req.params.memoryId);
-
-  return res.status(200).send(currentMemory);
 };
 
 // ! обновляем воспоминание

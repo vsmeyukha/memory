@@ -5,6 +5,8 @@ const multer = require('../middlewares/multer');
 
 const memoryRouter = require('./memory');
 
+const timelineRouter = require('./timeline');
+
 const { createMainPhotoFolder, createMainGalleryFolder } = require('../middlewares/creatingFolders');
 
 const {
@@ -47,5 +49,7 @@ router.patch(
 // ! и комментариев к ним - роутер комментов подключен в роутере воспоминаний
 
 router.use('/:deadPersonId', memoryRouter);
+
+router.use('/:deadPersonId', timelineRouter);
 
 module.exports = router;

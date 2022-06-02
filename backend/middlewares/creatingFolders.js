@@ -31,11 +31,11 @@ const createHobbiesGalleryFolder = (req, res, next) => {
 
 const createMemoryPhotosFolder = (req, res, next) => {
   fsPromises.mkdir(
-    path.join(`./uploads/${req.params.deadPersonId}/memories/user${req.user._id}/memory${req.memoryId}`),
+    path.join(`./uploads/${req.params.deadPersonId}/memories/user${req.user._id}/memory${req.instanceId}`),
     { recursive: true },
   )
     .then(() => console.log(
-      `папка ./uploads/${req.params.deadPersonId}/users/${req.user._id}/memories/${req.memoryId} успешно создана`,
+      `папка ./uploads/${req.params.deadPersonId}/users/${req.user._id}/memories/${req.instanceId} успешно создана`,
     ))
     .catch((err) => console.log(err));
 

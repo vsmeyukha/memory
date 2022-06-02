@@ -13,6 +13,8 @@ const {
   deleteUser,
 } = require('../controllers/users');
 
+const { getAllTimelinePointsWhichOnePersonHasWritten } = require('../controllers/timelines');
+
 router.get('/', auth, asyncHandler(getCurrentUser));
 
 router.patch('/', auth, asyncHandler(updateUser));
@@ -24,6 +26,8 @@ router.post('/register', asyncHandler(register));
 router.post('/login', asyncHandler(login));
 
 router.delete('/', auth, asyncHandler(deleteUser));
+
+router.get('/get-all-my-timeline-points', auth, asyncHandler(getAllTimelinePointsWhichOnePersonHasWritten));
 
 // ? это тестовая история, ее потом надо будет подчистить
 router.get('/allusers', asyncHandler(getAllUsers));

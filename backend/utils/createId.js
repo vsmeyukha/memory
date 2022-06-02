@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
-const memoryId = mongoose.Types.ObjectId();
+const newInstanceId = mongoose.Types.ObjectId().toString();
+console.log(newInstanceId);
 
-module.exports = memoryId;
+module.exports = newInstanceId;

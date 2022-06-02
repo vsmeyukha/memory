@@ -5,7 +5,7 @@ const commentsRouter = require('./comments');
 
 const { uploadMemoryPhoto } = require('../middlewares/multer');
 const { createMemoryPhotosFolder } = require('../middlewares/creatingFolders');
-const createMemoryId = require('../middlewares/createMemoryId');
+const createInstanceId = require('../middlewares/createInstanceId');
 
 const {
   addNewMemory,
@@ -24,7 +24,7 @@ router.post('/add-new-memory', asyncHandler(addNewMemory));
 
 router.post(
   '/add-new-memory-with-photo',
-  createMemoryId,
+  createInstanceId,
   createMemoryPhotosFolder,
   uploadMemoryPhoto.single('memory-photo'),
   asyncHandler(addNewMemoryWithPhoto),

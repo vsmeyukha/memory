@@ -5,6 +5,7 @@ const messages = {
   deleteYourAccount: 'Ваш аккаунт успешно удалён',
   deleteMemory: 'Воспоминание удалено',
   deleteComment: 'Комментарий удалён',
+  deleteTimelinePoint: 'Пункт таймлайна успешно удалён',
 };
 
 module.exports = messages;
