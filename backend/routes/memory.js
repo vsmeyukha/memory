@@ -3,9 +3,9 @@ const asyncHandler = require('express-async-handler');
 
 const commentsRouter = require('./comments');
 
-const { uploadMemoryPhoto } = require('../middlewares/multer');
-const { createMemoryPhotosFolder } = require('../middlewares/creatingFolders');
 const createInstanceId = require('../middlewares/createInstanceId');
+const { createMemoryPhotosFolder } = require('../middlewares/creatingFolders');
+const { uploadMemoryPhoto } = require('../middlewares/multer');
 
 const {
   addNewMemory,

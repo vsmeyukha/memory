@@ -29,7 +29,7 @@ const addNewTimelinePointWithPhoto = async (req, res, next) => {
     photo: req.file.path,
   };
 
-  const newTimelinePointWithPhoto = Timeline.create(timelinePointWithPhoto);
+  const newTimelinePointWithPhoto = await Timeline.create(timelinePointWithPhoto);
 
   return res.status(200).send(newTimelinePointWithPhoto);
 };

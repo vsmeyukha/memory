@@ -6,24 +6,30 @@ const path = require('path');
 // ? а это вызывает ошибку, посколько req не определено
 
 const createMainPhotoFolder = (req, res, next) => {
-  fsPromises.mkdir(path.join(`./uploads/${req.params.deadPersonId}/main-photo`), { recursive: true })
-    .then(() => console.log(`папка ./uploads/${req.params.deadPersonId}/main-photo успешно создана`))
+  fsPromises.mkdir(
+    path.join(`./uploads/dead-people/${req.params.deadPersonId}/main-photo`),
+    { recursive: true },
+  )
+    .then(() => console.log(`папка ./uploads/dead-people/${req.params.deadPersonId}/main-photo успешно создана`))
     .catch((err) => console.log(err));
 
   next();
 };
 
 const createMainGalleryFolder = (req, res, next) => {
-  fsPromises.mkdir(path.join(`./uploads/${req.params.deadPersonId}/main-gallery`), { recursive: true })
-    .then(() => console.log(`папка ./uploads/${req.params.deadPersonId}/main-gallery успешно создана`))
+  fsPromises.mkdir(
+    path.join(`./uploads/dead-people/${req.params.deadPersonId}/main-gallery`),
+    { recursive: true },
+  )
+    .then(() => console.log(`папка ./uploads/dead-people/${req.params.deadPersonId}/main-gallery успешно создана`))
     .catch((err) => console.log(err));
 
   next();
 };
 
 const createHobbiesGalleryFolder = (req, res, next) => {
-  fsPromises.mkdir(path.join(`./uploads/${req.params.deadPersonId}/hobbies-gallery`), { recursive: true })
-    .then(() => console.log(`папка ./uploads/${req.params.deadPersonId}/hobbies-gallery успешно создана`))
+  fsPromises.mkdir(path.join(`./uploads/dead-people/${req.params.deadPersonId}/hobbies-gallery`), { recursive: true })
+    .then(() => console.log(`папка ./uploads/dead-people/${req.params.deadPersonId}/hobbies-gallery успешно создана`))
     .catch((err) => console.log(err));
 
   next();
@@ -31,11 +37,24 @@ const createHobbiesGalleryFolder = (req, res, next) => {
 
 const createMemoryPhotosFolder = (req, res, next) => {
   fsPromises.mkdir(
-    path.join(`./uploads/${req.params.deadPersonId}/memories/user${req.user._id}/memory${req.instanceId}`),
+    path.join(`./uploads/dead-people/${req.params.deadPersonId}/memories/user${req.user._id}/memory${req.instanceId}`),
     { recursive: true },
   )
     .then(() => console.log(
-      `папка ./uploads/${req.params.deadPersonId}/users/${req.user._id}/memories/${req.instanceId} успешно создана`,
+      `папка ./uploads/dead-people/${req.params.deadPersonId}/memories/user${req.user._id}/memory${req.instanceId} успешно создана`,
+    ))
+    .catch((err) => console.log(err));
+
+  next();
+};
+
+const createTimelinePhotosFolder = (req, res, next) => {
+  fsPromises.mkdir(
+    path.join(`./uploads/dead-people/${req.params.deadPersonId}/timeline/user${req.user._id}/timeline-point${req.instanceId}`),
+    { recursive: true },
+  )
+    .then(() => console.log(
+      `папка ./uploads/dead-people/${req.params.deadPersonId}/timeline/user${req.user._id}/timeline-point${req.instanceId} успешно создана`,
     ))
     .catch((err) => console.log(err));
 
@@ -47,4 +66,5 @@ module.exports = {
   createMainGalleryFolder,
   createHobbiesGalleryFolder,
   createMemoryPhotosFolder,
+  createTimelinePhotosFolder,
 };
