@@ -33,6 +33,19 @@ const mainGalleryStorage = multer.diskStorage({
   },
 });
 
+const hobbyGalleryStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const error = getError(file);
+
+    cb(error, `./uploads/dead-people/${req.params.deadPersonId}/hobby-gallery`);
+  },
+  filename: (req, file, cb) => {
+    const error = getError(file);
+
+    cb(error, `${generateFileName(file)}`);
+  },
+});
+
 const memoryPhotoStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     const error = getError(file);
@@ -61,12 +74,14 @@ const timelinePhotoStorage = multer.diskStorage({
 
 const uploadMainPhoto = multer({ storage: mainPhotoStorage });
 const uploadMainGallery = multer({ storage: mainGalleryStorage });
+const uploadHobbyGallery = multer({ storage: hobbyGalleryStorage });
 const uploadMemoryPhoto = multer({ storage: memoryPhotoStorage });
 const uploadTimelinePhoto = multer({ storage: timelinePhotoStorage });
 
 module.exports = {
   uploadMainPhoto,
   uploadMainGallery,
+  uploadHobbyGallery,
   uploadMemoryPhoto,
   uploadTimelinePhoto,
 };

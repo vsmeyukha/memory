@@ -28,8 +28,8 @@ const createMainGalleryFolder = (req, res, next) => {
 };
 
 const createHobbiesGalleryFolder = (req, res, next) => {
-  fsPromises.mkdir(path.join(`./uploads/dead-people/${req.params.deadPersonId}/hobbies-gallery`), { recursive: true })
-    .then(() => console.log(`папка ./uploads/dead-people/${req.params.deadPersonId}/hobbies-gallery успешно создана`))
+  fsPromises.mkdir(path.join(`./uploads/dead-people/${req.params.deadPersonId}/hobby-gallery`), { recursive: true })
+    .then(() => console.log(`папка ./uploads/dead-people/${req.params.deadPersonId}/hobby-gallery успешно создана`))
     .catch((err) => console.log(err));
 
   next();

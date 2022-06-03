@@ -29,7 +29,9 @@ const deadPersonSchema = new mongoose.Schema({
   mainGallery: [{
     type: String,
   }], // ? как ограничить длину массива?
-  // memory: [memory],
+  hobbyGallery: [{
+    type: String,
+  }],
 });
 
 module.exports = mongoose.model('deadPerson', deadPersonSchema);

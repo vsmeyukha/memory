@@ -7,7 +7,7 @@ const memoryRouter = require('./memory');
 
 const timelineRouter = require('./timeline');
 
-const { createMainPhotoFolder, createMainGalleryFolder } = require('../middlewares/creatingFolders');
+const { createMainPhotoFolder, createMainGalleryFolder, createHobbiesGalleryFolder } = require('../middlewares/creatingFolders');
 
 const {
   getAllDeadPeople,
@@ -17,6 +17,7 @@ const {
   deleteDeadPerson,
   uploadMainPhoto,
   uploadMainGallery,
+  uploadHobbyGallery,
 } = require('../controllers/deadPeople');
 
 router.get('/', asyncHandler(getAllDeadPeople));
@@ -43,6 +44,13 @@ router.patch(
   createMainGalleryFolder,
   multer.uploadMainGallery.array('main-gallery', 12),
   asyncHandler(uploadMainGallery),
+);
+
+router.patch(
+  '/:deadPersonId/hobby-gallery',
+  createHobbiesGalleryFolder,
+  multer.uploadHobbyGallery.array('hobby-gallery', 12),
+  asyncHandler(uploadHobbyGallery),
 );
 
 // ! роутинг воспоминаний

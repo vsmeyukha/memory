@@ -83,6 +83,28 @@ const uploadMainGallery = async (req, res, next) => {
   return res.status(200).send(deadPersonWithMainGallery);
 };
 
+const uploadHobbyGallery = async (req, res, next) => {
+  const deadMan = await DeadPerson.findById(req.params.deadPersonId);
+
+  const photoLinks = deadMan.hobbyGallery;
+
+  for (let i = 0; i < req.files.length; i++) {
+    photoLinks.push(req.files[i].path);
+  }
+
+  const deadPersonWithHobbyGallery = await DeadPerson.findByIdAndUpdate(
+    req.params.deadPersonId,
+    { hobbyGallery: photoLinks },
+    {
+      new: true,
+      runValidators: true,
+      upsert: true,
+    },
+  );
+
+  return res.status(200).send(deadPersonWithHobbyGallery);
+};
+
 // const addAMemory = async (req, res, next) => {
 //   const { memory } = req.body.memory;
 
@@ -111,4 +133,5 @@ module.exports = {
   deleteDeadPerson,
   uploadMainPhoto,
   uploadMainGallery,
+  uploadHobbyGallery,
 };
