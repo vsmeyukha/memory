@@ -37,7 +37,7 @@ const memoryPhotoStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     const error = getError(file);
 
-    cb(error, `./uploads/${req.params.deadPersonId}/memories/user${req.user._id}/memory${req.memoryId}`);
+    cb(error, `./uploads/${req.params.deadPersonId}/memories/user${req.user._id}/memory${req.instanceId}`);
   },
   filename: (req, file, cb) => {
     const error = getError(file);
