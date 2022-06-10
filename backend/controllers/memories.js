@@ -50,29 +50,6 @@ const addNewMemoryWithPhoto = async (req, res, next) => {
   return res.status(200).send(newMemoryWithPhoto);
 };
 
-// ! получаем одно воспоминание
-const getOneMemory = async (req, res, next) => {
-  const currentMemory = await Memory.findById(req.params.memoryId);
-
-  return res.status(200).send(currentMemory);
-};
-
-// ! получаем все воспоминания об одном человеке
-const getAllMemoriesAboutOnePerson = async (req, res, next) => {
-  // ? ищем в базе все воспоминания, относящиеся к одному человеку
-  // ? то есть те, у которых в поле affiliation айдишник, переданный в req.params.deadPersonId
-  const allMemoriesAboutOnePerson = await Memory.find({ affiliation: req.params.deadPersonId });
-
-  // ? возвращаем все воспоминания на фронт
-  return res.status(200).send(allMemoriesAboutOnePerson);
-};
-
-// ! удаляем воспоминание
-const deleteMemory = async (req, res, next) => {
-  await Memory.findByIdAndRemove(req.params.memoryId);
-  return res.status(200).send({ message: messages.deleteMemory });
-};
-
 // ! обновляем воспоминание
 const updateMemory = async (req, res, next) => {
   const updatedMemory = await Memory.findByIdAndUpdate(
@@ -92,11 +69,41 @@ const updateMemory = async (req, res, next) => {
   return res.status(200).send(updatedMemory);
 };
 
+// ! получаем одно воспоминание
+const getOneMemory = async (req, res, next) => {
+  const currentMemory = await Memory.findById(req.params.memoryId);
+
+  return res.status(200).send(currentMemory);
+};
+
+// ! получаем все воспоминания об одном человеке
+const getAllMemoriesAboutOnePerson = async (req, res, next) => {
+  // ? ищем в базе все воспоминания, относящиеся к одному человеку
+  // ? то есть те, у которых в поле affiliation айдишник, переданный в req.params.deadPersonId
+  const allMemoriesAboutOnePerson = await Memory.find({ affiliation: req.params.deadPersonId });
+
+  // ? возвращаем все воспоминания на фронт
+  return res.status(200).send(allMemoriesAboutOnePerson);
+};
+
+const getAllMemoriesWrittenByOnePerson = async (req, res, next) => {
+  const allMemoriesWrittenByOnePerson = await Memory.find({ owner: req.user._id });
+
+  return res.status(200).send(allMemoriesWrittenByOnePerson);
+};
+
+// ! удаляем воспоминание
+const deleteMemory = async (req, res, next) => {
+  await Memory.findByIdAndRemove(req.params.memoryId);
+  return res.status(200).send({ message: messages.deleteMemory });
+};
+
 module.exports = {
   addNewMemory,
   addNewMemoryWithPhoto,
-  getAllMemoriesAboutOnePerson,
-  deleteMemory,
-  getOneMemory,
   updateMemory,
+  getOneMemory,
+  getAllMemoriesAboutOnePerson,
+  getAllMemoriesWrittenByOnePerson,
+  deleteMemory,
 };

@@ -10,10 +10,11 @@ const obj = {
 
 obj.affiliation.ref = 'memory';
 
-const commentSchema = new mongoose.Schema(
+const commentToMemorySchema = new mongoose.Schema(
   {
     ...obj,
   },
+  { timestamps: true },
 );
 
-module.exports = mongoose.model('comment', commentSchema);
+module.exports = mongoose.model('commenttomemory', commentToMemorySchema);

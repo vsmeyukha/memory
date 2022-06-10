@@ -15,6 +15,7 @@ const memorySchema = new mongoose.Schema(
   {
     ...obj,
   },
+  { timestamps: true },
 );
 
 // const memorySchema = new mongoose.Schema(

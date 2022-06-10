@@ -13,7 +13,11 @@ const {
   deleteUser,
 } = require('../controllers/users');
 
+const { getAllMemoriesWrittenByOnePerson } = require('../controllers/memories');
+
 const { getAllTimelinePointsWhichOnePersonHasWritten } = require('../controllers/timelines');
+
+const { getAllCommentsWrittenByOnePerson } = require('../controllers/commentsToMemories');
 
 router.get('/', auth, asyncHandler(getCurrentUser));
 
@@ -27,7 +31,11 @@ router.post('/login', asyncHandler(login));
 
 router.delete('/', auth, asyncHandler(deleteUser));
 
+router.get('/get-all-my-memories', auth, asyncHandler(getAllMemoriesWrittenByOnePerson));
+
 router.get('/get-all-my-timeline-points', auth, asyncHandler(getAllTimelinePointsWhichOnePersonHasWritten));
+
+router.get('/get-all-my-comments', auth, asyncHandler(getAllCommentsWrittenByOnePerson));
 
 // ? это тестовая история, ее потом надо будет подчистить
 router.get('/allusers', asyncHandler(getAllUsers));

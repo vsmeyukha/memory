@@ -1,6 +1,8 @@
 const router = require('express').Router({ mergeParams: true });
 const asyncHandler = require('express-async-handler');
 
+const commentsRouter = require('./commentsToTimeline');
+
 const createInstanceId = require('../middlewares/createInstanceId');
 const { createTimelinePhotosFolder } = require('../middlewares/creatingFolders');
 const { uploadTimelinePhoto } = require('../middlewares/multer');
@@ -31,5 +33,7 @@ router.get('/timeline/:timelinePointId', asyncHandler(getOneTimelinePoint));
 router.get('/timeline', asyncHandler(getAllTimelinePointsAboutOnePerson));
 
 router.delete('/timeline/:timelinePointId', asyncHandler(deleteTimelinePoint));
+
+router.use('/timeline/:timelinePointId', commentsRouter);
 
 module.exports = router;

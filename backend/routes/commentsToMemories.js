@@ -7,7 +7,7 @@ const {
   getCurrentComment,
   updateComment,
   deleteComment,
-} = require('../controllers/comments');
+} = require('../controllers/commentsToMemories');
 
 router.post('/add-new-comment', asyncHandler(addNewComment));
 

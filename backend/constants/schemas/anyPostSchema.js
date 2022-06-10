@@ -20,11 +20,11 @@ const anyPostSchema = {
   photo: {
     type: String,
   },
-  createdAt: {
-    type: String,
-    default: localTimeWithoutSeconds(),
-    required: true,
-  },
+  // createdAt: {
+  //   type: String,
+  //   default: localTimeWithoutSeconds(),
+  //   required: true,
+  // },
   reaction: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
@@ -34,10 +34,10 @@ const anyPostSchema = {
     required: true,
     default: false,
   },
-  editedAt: {
-    type: String,
-    default: '',
-  },
+  // editedAt: {
+  //   type: String,
+  //   default: '',
+  // },
   timezone: {
     type: String,
   },

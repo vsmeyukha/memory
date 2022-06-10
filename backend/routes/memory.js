@@ -1,7 +1,7 @@
 const router = require('express').Router({ mergeParams: true });
 const asyncHandler = require('express-async-handler');
 
-const commentsRouter = require('./comments');
+const commentsRouter = require('./commentsToMemories');
 
 const createInstanceId = require('../middlewares/createInstanceId');
 const { createMemoryPhotosFolder } = require('../middlewares/creatingFolders');
@@ -16,7 +16,10 @@ const {
   updateMemory,
 } = require('../controllers/memories');
 
-router.post('/add-new-memory', asyncHandler(addNewMemory));
+router.post(
+  '/add-new-memory',
+  asyncHandler(addNewMemory),
+);
 
 // ? непонятно, как развести по урлу друг с другом создание простого воспоминания
 // ? и воспоминания с фото

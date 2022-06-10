@@ -29,11 +29,11 @@ const anyPersonSchema = {
   mainPhoto: {
     type: String,
   },
-  createdAt: {
-    type: String,
-    default: localTimeWithoutSeconds(),
-    required: true,
-  },
+  // createdAt: {
+  //   type: String,
+  //   default: localTimeWithoutSeconds(),
+  //   required: true,
+  // },
 };
 
 module.exports = anyPersonSchema;
