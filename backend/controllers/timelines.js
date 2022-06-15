@@ -52,6 +52,32 @@ const updateTimelinePoint = async (req, res, next) => {
   res.status(200).send(updatedTimelinePoint);
 };
 
+const addReaction = async (req, res, next) => {
+  const timelinePointWithAReaction = await Timeline.findByIdAndUpdate(
+    req.params.timelinePointId,
+    {
+      $addToSet:
+        { reaction: req.user._id },
+    },
+    { new: true },
+  );
+
+  return res.status(200).send(timelinePointWithAReaction);
+};
+
+const takeReactionBack = async (req, res, next) => {
+  const timelinePointWithoutAReaction = await Timeline.findByIdAndUpdate(
+    req.params.timelinePointId,
+    {
+      $pull:
+        { reaction: req.user._id },
+    },
+    { new: true },
+  );
+
+  return res.status(200).send(timelinePointWithoutAReaction);
+};
+
 const getOneTimelinePoint = async (req, res, next) => {
   const currentTimelinePoint = await Timeline.findById(req.params.timelinePointId);
 
@@ -85,4 +111,6 @@ module.exports = {
   getAllTimelinePointsAboutOnePerson,
   getAllTimelinePointsWhichOnePersonHasWritten,
   deleteTimelinePoint,
+  addReaction,
+  takeReactionBack,
 };

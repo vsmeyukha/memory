@@ -17,7 +17,9 @@ const { getAllMemoriesWrittenByOnePerson } = require('../controllers/memories');
 
 const { getAllTimelinePointsWhichOnePersonHasWritten } = require('../controllers/timelines');
 
-const { getAllCommentsWrittenByOnePerson } = require('../controllers/commentsToMemories');
+const commentsToMemories = require('../controllers/commentsToMemories');
+
+const commentsToTimeline = require('../controllers/commentsToTimeline');
 
 router.get('/', auth, asyncHandler(getCurrentUser));
 
@@ -35,7 +37,9 @@ router.get('/get-all-my-memories', auth, asyncHandler(getAllMemoriesWrittenByOne
 
 router.get('/get-all-my-timeline-points', auth, asyncHandler(getAllTimelinePointsWhichOnePersonHasWritten));
 
-router.get('/get-all-my-comments', auth, asyncHandler(getAllCommentsWrittenByOnePerson));
+router.get('/get-all-my-comments-to-memories', auth, asyncHandler(commentsToMemories.getAllCommentsWrittenByOnePerson));
+
+router.get('/get-all-my-comments-to-timeline-points', auth, asyncHandler(commentsToTimeline.getAllCommentsWrittenByOnePerson));
 
 // ? это тестовая история, ее потом надо будет подчистить
 router.get('/allusers', asyncHandler(getAllUsers));

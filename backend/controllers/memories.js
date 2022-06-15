@@ -69,6 +69,32 @@ const updateMemory = async (req, res, next) => {
   return res.status(200).send(updatedMemory);
 };
 
+const addReaction = async (req, res, next) => {
+  const memoryWithAReaction = await Memory.findByIdAndUpdate(
+    req.params.memoryId,
+    {
+      $addToSet:
+        { reaction: req.user._id },
+    },
+    { new: true },
+  );
+
+  return res.status(200).send(memoryWithAReaction);
+};
+
+const takeRactionBack = async (req, res, next) => {
+  const memoryWithoutAReaction = await Memory.findByIdAndUpdate(
+    req.params.memoryId,
+    {
+      $pull:
+        { reaction: req.user._id },
+    },
+    { new: true },
+  );
+
+  return res.status(200).send(memoryWithoutAReaction);
+};
+
 // ! получаем одно воспоминание
 const getOneMemory = async (req, res, next) => {
   const currentMemory = await Memory.findById(req.params.memoryId);
@@ -102,6 +128,8 @@ module.exports = {
   addNewMemory,
   addNewMemoryWithPhoto,
   updateMemory,
+  addReaction,
+  takeRactionBack,
   getOneMemory,
   getAllMemoriesAboutOnePerson,
   getAllMemoriesWrittenByOnePerson,

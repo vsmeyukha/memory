@@ -17,14 +17,12 @@ const addNewComment = async (req, res, next) => {
   return res.status(200).send(newComment);
 };
 
-// ? здесь в объект боди прокидываем время редактирования editedAt: localTimeWithoutSeconds
 const updateComment = async (req, res, next) => {
   const updatedComment = await Comment.findByIdAndUpdate(
     req.params.commentId,
     {
       ...req.body,
       edited: true,
-      editedAt: localTimeWithoutSeconds(),
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     },
     {
@@ -35,6 +33,32 @@ const updateComment = async (req, res, next) => {
   );
 
   return res.status(200).send(updatedComment);
+};
+
+const addReaction = async (req, res, next) => {
+  const commentWithAReaction = await Comment.findByIdAndUpdate(
+    req.params.commentId,
+    {
+      $addToSet:
+        { reaction: req.user._id },
+    },
+    { new: true },
+  );
+
+  return res.status(200).send(commentWithAReaction);
+};
+
+const takeReactionBack = async (req, res, next) => {
+  const commentWithoutAReaction = await Comment.findByIdAndUpdate(
+    req.params.commentId,
+    {
+      $pull:
+        { reaction: req.user._id },
+    },
+    { new: true },
+  );
+
+  return res.status(200).send(commentWithoutAReaction);
 };
 
 const getCurrentComment = async (req, res, next) => {
@@ -63,6 +87,8 @@ const deleteComment = async (req, res, next) => {
 module.exports = {
   addNewComment,
   updateComment,
+  addReaction,
+  takeReactionBack,
   getCurrentComment,
   getAllCommentsToOneMemory,
   getAllCommentsWrittenByOnePerson,

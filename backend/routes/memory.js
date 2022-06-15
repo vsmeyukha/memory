@@ -14,6 +14,8 @@ const {
   deleteMemory,
   getOneMemory,
   updateMemory,
+  addReaction,
+  takeRactionBack,
 } = require('../controllers/memories');
 
 router.post(
@@ -32,6 +34,10 @@ router.post(
   uploadMemoryPhoto.single('memory-photo'),
   asyncHandler(addNewMemoryWithPhoto),
 );
+
+router.put('/memories/:memoryId/add-reaction', asyncHandler(addReaction));
+
+router.delete('/memories/:memoryId/take-reaction-back', asyncHandler(takeRactionBack));
 
 router.get('/memories', asyncHandler(getAllMemoriesAboutOnePerson));
 

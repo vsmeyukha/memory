@@ -7,6 +7,8 @@ const {
   getCurrentComment,
   updateComment,
   deleteComment,
+  addReaction,
+  takeReactionBack,
 } = require('../controllers/commentsToMemories');
 
 router.post('/add-new-comment', asyncHandler(addNewComment));
@@ -18,5 +20,9 @@ router.get('/comments/:commentId', asyncHandler(getCurrentComment));
 router.patch('/comments/:commentId', asyncHandler(updateComment));
 
 router.delete('/comments/:commentId', asyncHandler(deleteComment));
+
+router.put('/comments/:commentId/add-reaction', asyncHandler(addReaction));
+
+router.delete('/comments/:commentId/take-reaction-back', asyncHandler(takeReactionBack));
 
 module.exports = router;

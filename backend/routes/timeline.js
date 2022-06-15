@@ -14,6 +14,8 @@ const {
   getOneTimelinePoint,
   getAllTimelinePointsAboutOnePerson,
   deleteTimelinePoint,
+  addReaction,
+  takeReactionBack,
 } = require('../controllers/timelines');
 
 router.post('/add-new-timeline-point', asyncHandler(addNewTimelinePoint));
@@ -27,6 +29,10 @@ router.post(
 );
 
 router.patch('/timeline/:timelinePointId', asyncHandler(updateTimelinePoint));
+
+router.put('/timeline/:timelinePointId/add-reaction', asyncHandler(addReaction));
+
+router.delete('/timeline/:timelinePointId/take-reaction-back', asyncHandler(takeReactionBack));
 
 router.get('/timeline/:timelinePointId', asyncHandler(getOneTimelinePoint));
 
