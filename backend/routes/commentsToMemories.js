@@ -1,6 +1,8 @@
 const router = require('express').Router({ mergeParams: true });
 const asyncHandler = require('express-async-handler');
 
+const { validatecommentId } = require('../middlewares/celebrate');
+
 const {
   addNewComment,
   getAllCommentsToOneMemory,
@@ -15,14 +17,14 @@ router.post('/add-new-comment', asyncHandler(addNewComment));
 
 router.get('/comments', asyncHandler(getAllCommentsToOneMemory));
 
-router.get('/comments/:commentId', asyncHandler(getCurrentComment));
+router.get('/comments/:commentId', validatecommentId, asyncHandler(getCurrentComment));
 
-router.patch('/comments/:commentId', asyncHandler(updateComment));
+router.patch('/comments/:commentId', validatecommentId, asyncHandler(updateComment));
 
-router.delete('/comments/:commentId', asyncHandler(deleteComment));
+router.delete('/comments/:commentId', validatecommentId, asyncHandler(deleteComment));
 
-router.put('/comments/:commentId/add-reaction', asyncHandler(addReaction));
+router.put('/comments/:commentId/add-reaction', validatecommentId, asyncHandler(addReaction));
 
-router.delete('/comments/:commentId/take-reaction-back', asyncHandler(takeReactionBack));
+router.delete('/comments/:commentId/take-reaction-back', validatecommentId, asyncHandler(takeReactionBack));
 
 module.exports = router;

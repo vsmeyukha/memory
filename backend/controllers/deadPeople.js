@@ -8,7 +8,11 @@ const getAllDeadPeople = async (req, res, next) => {
 
 const getDeadPerson = async (req, res, next) => {
   const deadMan = await DeadPerson.findById(req.params.deadPersonId);
-  return res.status(200).send(deadMan);
+  if (!deadMan) {
+    return res.status(404).send({
+      message: 'нет такого человека',
+    });
+  } return res.status(200).send(deadMan);
 };
 
 // ! добавляем нового умершего человека
@@ -61,6 +65,28 @@ const uploadMainPhoto = async (req, res, next) => {
   return res.status(200).send(deadPersonWithMainPhoto);
 };
 
+const getMainPhotoString = async (req, res, next) => {
+  const deadMan = await DeadPerson.findById(req.params.deadPersonId);
+
+  req.mainPhoto = deadMan.mainPhoto;
+
+  next();
+};
+
+const deleteMainPhotoFromDB = async (req, res, next) => {
+  const deadManWithoutMainPhoto = await DeadPerson.findByIdAndUpdate(
+    req.params.deadPersonId,
+    { mainPhoto: '' },
+    {
+      new: true,
+      runValidators: true,
+      upsert: true,
+    },
+  );
+
+  return res.status(200).send(deadManWithoutMainPhoto);
+};
+
 const uploadMainGallery = async (req, res, next) => {
   const deadMan = await DeadPerson.findById(req.params.deadPersonId);
 
@@ -105,26 +131,6 @@ const uploadHobbyGallery = async (req, res, next) => {
   return res.status(200).send(deadPersonWithHobbyGallery);
 };
 
-// const addAMemory = async (req, res, next) => {
-//   const { memory } = req.body.memory;
-
-//   const owner = req.user._id;
-
-//   const memoryWithUserId = { ...memory, owner };
-
-//   const newMemory = await DeadPerson.findByIdAndUpdate(
-//     req.params.deadPersonId,
-//     req.body,
-//     {
-//       new: true,
-//       runValidators: true,
-//       upsert: true,
-//     },
-//   );
-
-//   return res.status(200).send(newMemory);
-// };
-
 module.exports = {
   getAllDeadPeople,
   getDeadPerson,
@@ -134,4 +140,6 @@ module.exports = {
   uploadMainPhoto,
   uploadMainGallery,
   uploadHobbyGallery,
+  deleteMainPhotoFromDB,
+  getMainPhotoString,
 };

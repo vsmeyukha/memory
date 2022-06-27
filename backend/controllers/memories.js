@@ -82,7 +82,7 @@ const addReaction = async (req, res, next) => {
   return res.status(200).send(memoryWithAReaction);
 };
 
-const takeRactionBack = async (req, res, next) => {
+const takeReactionBack = async (req, res, next) => {
   const memoryWithoutAReaction = await Memory.findByIdAndUpdate(
     req.params.memoryId,
     {
@@ -129,7 +129,7 @@ module.exports = {
   addNewMemoryWithPhoto,
   updateMemory,
   addReaction,
-  takeRactionBack,
+  takeReactionBack,
   getOneMemory,
   getAllMemoriesAboutOnePerson,
   getAllMemoriesWrittenByOnePerson,

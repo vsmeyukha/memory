@@ -4,8 +4,9 @@ const asyncHandler = require('express-async-handler');
 const commentsRouter = require('./commentsToMemories');
 
 const createInstanceId = require('../middlewares/createInstanceId');
-const { createMemoryPhotosFolder } = require('../middlewares/creatingFolders');
+const { createMemoryPhotosFolder } = require('../middlewares/managingFolders');
 const { uploadMemoryPhoto } = require('../middlewares/multer');
+const { validateMemoryId } = require('../middlewares/celebrate');
 
 const {
   addNewMemory,
@@ -15,7 +16,7 @@ const {
   getOneMemory,
   updateMemory,
   addReaction,
-  takeRactionBack,
+  takeReactionBack,
 } = require('../controllers/memories');
 
 router.post(
@@ -35,20 +36,20 @@ router.post(
   asyncHandler(addNewMemoryWithPhoto),
 );
 
-router.put('/memories/:memoryId/add-reaction', asyncHandler(addReaction));
+router.put('/memories/:memoryId/add-reaction', validateMemoryId, asyncHandler(addReaction));
 
-router.delete('/memories/:memoryId/take-reaction-back', asyncHandler(takeRactionBack));
+router.delete('/memories/:memoryId/take-reaction-back', validateMemoryId, asyncHandler(takeReactionBack));
 
 router.get('/memories', asyncHandler(getAllMemoriesAboutOnePerson));
 
-router.delete('/memories/:memoryId', asyncHandler(deleteMemory));
+router.delete('/memories/:memoryId', validateMemoryId, asyncHandler(deleteMemory));
 
-router.get('/memories/:memoryId', asyncHandler(getOneMemory));
+router.get('/memories/:memoryId', validateMemoryId, asyncHandler(getOneMemory));
 
-router.patch('/memories/:memoryId', asyncHandler(updateMemory));
+router.patch('/memories/:memoryId', validateMemoryId, asyncHandler(updateMemory));
 
 // ! роутинг комментов
 
-router.use('/memories/:memoryId', commentsRouter);
+router.use('/memories/:memoryId', validateMemoryId, commentsRouter);
 
 module.exports = router;

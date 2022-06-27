@@ -3,6 +3,8 @@ const asyncHandler = require('express-async-handler');
 
 const auth = require('../middlewares/auth');
 
+const { validateEmailAndPassword, validateUserInfo, validateRegistration } = require('../middlewares/celebrate');
+
 const {
   getAllUsers,
   register,
@@ -23,13 +25,13 @@ const commentsToTimeline = require('../controllers/commentsToTimeline');
 
 router.get('/', auth, asyncHandler(getCurrentUser));
 
-router.patch('/', auth, asyncHandler(updateUser));
+router.patch('/', auth, validateUserInfo, asyncHandler(updateUser));
 
 router.post('/signout', auth, signOut);
 
-router.post('/register', asyncHandler(register));
+router.post('/register', validateRegistration, asyncHandler(register));
 
-router.post('/login', asyncHandler(login));
+router.post('/login', validateEmailAndPassword, asyncHandler(login));
 
 router.delete('/', auth, asyncHandler(deleteUser));
 
