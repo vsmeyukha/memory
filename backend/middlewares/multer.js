@@ -72,11 +72,25 @@ const timelinePhotoStorage = multer.diskStorage({
   },
 });
 
+const userAvatarStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const error = getError(file);
+
+    cb(error, `./uploads/users/${req.user._id}/avatar`);
+  },
+  filename: (req, file, cb) => {
+    const error = getError(file);
+
+    cb(error, `${generateFileName(file)}`);
+  },
+});
+
 const uploadMainPhoto = multer({ storage: mainPhotoStorage });
 const uploadMainGallery = multer({ storage: mainGalleryStorage });
 const uploadHobbyGallery = multer({ storage: hobbyGalleryStorage });
 const uploadMemoryPhoto = multer({ storage: memoryPhotoStorage });
 const uploadTimelinePhoto = multer({ storage: timelinePhotoStorage });
+const uploadUserAvatar = multer({ storage: userAvatarStorage });
 
 module.exports = {
   uploadMainPhoto,
@@ -84,4 +98,5 @@ module.exports = {
   uploadHobbyGallery,
   uploadMemoryPhoto,
   uploadTimelinePhoto,
+  uploadUserAvatar,
 };

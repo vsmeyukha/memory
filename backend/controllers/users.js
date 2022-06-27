@@ -220,6 +220,42 @@ const deleteUser = async (req, res, next) => {
     });
 };
 
+const uploadAvatar = async (req, res, next) => {
+  const userWithAvatar = await User.findByIdAndUpdate(
+    req.user._id,
+    { mainPhoto: req.file.path },
+    {
+      new: true,
+      runValidators: true,
+      upsert: true,
+    },
+  );
+
+  return res.status(200).send(userWithAvatar);
+};
+
+const getAvatarString = async (req, res, next) => {
+  const currentUser = await User.findById(req.user._id);
+
+  req.userAvatar = currentUser.mainPhoto;
+
+  next();
+}
+
+const deleteAvatar = async (req, res, next) => {
+  const userWithoutAvatar = await User.findByIdAndUpdate(
+    req.user._id,
+    { mainPhoto: '' },
+    {
+      new: true,
+      runValidators: true,
+      upsert: true,
+    },
+  );
+
+  return res.status(200).send(userWithoutAvatar);
+};
+
 module.exports = {
   getAllUsers,
   register,
@@ -228,4 +264,7 @@ module.exports = {
   updateUser,
   signOut,
   deleteUser,
+  uploadAvatar,
+  getAvatarString,
+  deleteAvatar,
 };

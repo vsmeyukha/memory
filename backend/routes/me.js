@@ -13,7 +13,14 @@ const {
   updateUser,
   signOut,
   deleteUser,
+  uploadAvatar,
+  getAvatarString,
+  deleteAvatar,
 } = require('../controllers/users');
+
+const { createUserAvatarFolder, deleteUserAvatarFolder, deleteUserAvatarFile } = require('../middlewares/managingFolders');
+
+const { uploadUserAvatar } = require('../middlewares/multer');
 
 const { getAllMemoriesWrittenByOnePerson } = require('../controllers/memories');
 
@@ -42,6 +49,30 @@ router.get('/get-all-my-timeline-points', auth, asyncHandler(getAllTimelinePoint
 router.get('/get-all-my-comments-to-memories', auth, asyncHandler(commentsToMemories.getAllCommentsWrittenByOnePerson));
 
 router.get('/get-all-my-comments-to-timeline-points', auth, asyncHandler(commentsToTimeline.getAllCommentsWrittenByOnePerson));
+
+router.patch(
+  '/upload-avatar',
+  auth,
+  createUserAvatarFolder,
+  uploadUserAvatar.single('avatar'),
+  asyncHandler(uploadAvatar),
+);
+
+router.delete(
+  '/delete-avatar',
+  auth,
+  deleteUserAvatarFolder,
+  asyncHandler(deleteAvatar),
+);
+
+router.patch(
+  '/change-avatar',
+  auth,
+  getAvatarString,
+  deleteUserAvatarFile,
+  uploadUserAvatar.single('avatar'),
+  asyncHandler(uploadAvatar),
+);
 
 // ? это тестовая история, ее потом надо будет подчистить
 router.get('/allusers', asyncHandler(getAllUsers));

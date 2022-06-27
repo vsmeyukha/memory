@@ -16,14 +16,6 @@ const createMainPhotoFolder = (req, res, next) => {
   next();
 };
 
-const deleteMainPhotoFile = (req, res, next) => {
-  fsPromises.unlink(path.join(`${req.mainPhoto}`))
-    .then(() => console.log('photo successfully deleted'))
-    .catch((err) => console.log(err));
-
-  next();
-};
-
 const deleteMainPhotoFolder = (req, res, next) => {
   fsPromises.rmdir(
     path.join(`./uploads/dead-people/${req.params.deadPersonId}/main-photo`),
@@ -32,6 +24,14 @@ const deleteMainPhotoFolder = (req, res, next) => {
       force: true,
     },
   );
+
+  next();
+};
+
+const deleteMainPhotoFile = (req, res, next) => {
+  fsPromises.unlink(path.join(`${req.mainPhoto}`))
+    .then(() => console.log('photo successfully deleted'))
+    .catch((err) => console.log(err));
 
   next();
 };
@@ -86,36 +86,51 @@ const createTimelinePhotosFolder = (req, res, next) => {
   next();
 };
 
+const createUserAvatarFolder = (req, res, next) => {
+  fsPromises.mkdir(
+    path.join(`./uploads/users/${req.user._id}/avatar`),
+    { recursive: true },
+  )
+    .then(() => console.log(`папка ./uploads/users/${req.user._id}/avatar успешно создана`))
+    .catch((err) => console.log(err));
+
+  next();
+};
+
+const deleteUserAvatarFolder = (req, res, next) => {
+  fsPromises.rmdir(
+    path.join(`./uploads/users/${req.user._id}/avatar`),
+    {
+      recursive: true,
+      force: true,
+    },
+  )
+    .then(() => console.log('folder and everything inside of it successfully deleted'))
+    .catch((err) => console.log(err));
+
+  next();
+};
+
+const deleteUserAvatarFile = (req, res, next) => {
+  fsPromises.unlink(path.join(`${req.userAvatar}`))
+    .then(() => console.log('user avatar successfully deleted'))
+    .catch((err) => console.log(err));
+
+  next();
+};
+
 module.exports = {
   createMainPhotoFolder,
+  deleteMainPhotoFolder,
+  deleteMainPhotoFile,
   createMainGalleryFolder,
   createHobbiesGalleryFolder,
   createMemoryPhotosFolder,
   createTimelinePhotosFolder,
-  deleteMainPhotoFile,
-  deleteMainPhotoFolder,
+  createUserAvatarFolder,
+  deleteUserAvatarFolder,
+  deleteUserAvatarFile,
 };
-
-// const creatingFolderTest = () => {
-//   fsPromises.mkdir(
-//     path.join('./test-directory'),
-//     { recursive: true },
-//   )
-//     .then(() => console.log('папка создана'))
-//     .catch((err) => console.log(err));
-// };
-
-// const deletingFolderTest = () => {
-//   fsPromises.rmdir(
-//     path.join('./test-directory'),
-//     {
-//       recursive: true,
-//       force: true,
-//     },
-//   )
-//     .then(() => console.log('папка удалена'))
-//     .catch((err) => console.log(err));
-// };
 
 // const creatingFileTest = () => {
 //   fsPromises.writeFile(
@@ -126,11 +141,5 @@ module.exports = {
 //     },
 //   )
 //     .then(() => console.log('файл успешно создан'))
-//     .catch((err) => console.log(err));
-// };
-
-// const deletingFileTest = () => {
-//   fsPromises.unlink(path.join('./test-directory'))
-//     .then(() => console.log('файл удален!'))
 //     .catch((err) => console.log(err));
 // };
