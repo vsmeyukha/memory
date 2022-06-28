@@ -33,6 +33,8 @@ const {
   deletePhotoURLFromHobbyGallery,
 } = require('../controllers/deadPeople');
 
+// ! Роуты странички умершего человека
+
 router.get('/', asyncHandler(getAllDeadPeople));
 
 router.get('/:deadPersonId', validateDeadPersonId, asyncHandler(getDeadPerson));
@@ -45,7 +47,7 @@ router.delete('/:deadPersonId', validateDeadPersonId, asyncHandler(deleteDeadPer
 
 // ! Работа с фотографиями
 
-router.patch(
+router.post(
   '/:deadPersonId/main-photo',
   validateDeadPersonId,
   createMainPhotoFolder,
@@ -54,14 +56,14 @@ router.patch(
 );
 
 router.delete(
-  '/:deadPersonId/delete-main-photo',
+  '/:deadPersonId/main-photo',
   validateDeadPersonId,
   deleteMainPhotoFolder,
   asyncHandler(deleteMainPhotoFromDB),
 );
 
 router.patch(
-  '/:deadPersonId/change-main-photo',
+  '/:deadPersonId/main-photo',
   validateDeadPersonId,
   getMainPhotoString,
   deleteMainPhotoFile,
@@ -69,7 +71,7 @@ router.patch(
   asyncHandler(uploadMainPhoto),
 );
 
-router.patch(
+router.post(
   '/:deadPersonId/main-gallery',
   validateDeadPersonId,
   createMainGalleryFolder,
@@ -84,7 +86,7 @@ router.delete(
   asyncHandler(deletePhotoURLFromMainGallery),
 );
 
-router.patch(
+router.post(
   '/:deadPersonId/hobby-gallery',
   validateDeadPersonId,
   createHobbiesGalleryFolder,

@@ -31,9 +31,9 @@ router.post(
 
 router.patch('/timeline/:timelinePointId', validateTimelinePointId, asyncHandler(updateTimelinePoint));
 
-router.put('/timeline/:timelinePointId/add-reaction', validateTimelinePointId, asyncHandler(addReaction));
+router.put('/timeline/:timelinePointId/reaction', validateTimelinePointId, asyncHandler(addReaction));
 
-router.delete('/timeline/:timelinePointId/take-reaction-back', validateTimelinePointId, asyncHandler(takeReactionBack));
+router.delete('/timeline/:timelinePointId/reaction', validateTimelinePointId, asyncHandler(takeReactionBack));
 
 router.get('/timeline/:timelinePointId', validateTimelinePointId, asyncHandler(getOneTimelinePoint));
 

@@ -23,8 +23,8 @@ router.patch('/comments/:commentId', validatecommentId, asyncHandler(updateComme
 
 router.delete('/comments/:commentId', validatecommentId, asyncHandler(deleteComment));
 
-router.put('/comments/:commentId/add-reaction', validatecommentId, asyncHandler(addReaction));
+router.put('/comments/:commentId/reaction', validatecommentId, asyncHandler(addReaction));
 
-router.delete('/comments/:commentId/take-reaction-back', validatecommentId, asyncHandler(takeReactionBack));
+router.delete('/comments/:commentId/reaction', validatecommentId, asyncHandler(takeReactionBack));
 
 module.exports = router;

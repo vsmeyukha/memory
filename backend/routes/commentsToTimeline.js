@@ -1,6 +1,5 @@
 const router = require('express').Router({ mergeParams: true });
 const asyncHandler = require('express-async-handler');
-const { accessSync } = require('fs');
 
 const { validatecommentTotimelinePointId } = require('../middlewares/celebrate');
 
@@ -18,9 +17,9 @@ router.post('/add-new-comment', asyncHandler(addNewComment));
 
 router.patch('/comments/:commentTotimelinePointId', validatecommentTotimelinePointId, asyncHandler(updateComment));
 
-router.put('/comments/:commentTotimelinePointId/add-reaction', validatecommentTotimelinePointId, asyncHandler(addReaction));
+router.put('/comments/:commentTotimelinePointId/reaction', validatecommentTotimelinePointId, asyncHandler(addReaction));
 
-router.delete('/comments/:commentTotimelinePointId/take-reaction-back', validatecommentTotimelinePointId, asyncHandler(takeReactionBack));
+router.delete('/comments/:commentTotimelinePointId/reaction', validatecommentTotimelinePointId, asyncHandler(takeReactionBack));
 
 router.get('/comments', asyncHandler(getAllCommentsToOneTimelinePoint));
 

@@ -24,10 +24,6 @@ router.post(
   asyncHandler(addNewMemory),
 );
 
-// ? непонятно, как развести по урлу друг с другом создание простого воспоминания
-// ? и воспоминания с фото
-// ? ведь начинается у них все одинаково
-
 router.post(
   '/add-new-memory-with-photo',
   createInstanceId,
@@ -36,9 +32,9 @@ router.post(
   asyncHandler(addNewMemoryWithPhoto),
 );
 
-router.put('/memories/:memoryId/add-reaction', validateMemoryId, asyncHandler(addReaction));
+router.put('/memories/:memoryId/reaction', validateMemoryId, asyncHandler(addReaction));
 
-router.delete('/memories/:memoryId/take-reaction-back', validateMemoryId, asyncHandler(takeReactionBack));
+router.delete('/memories/:memoryId/reaction', validateMemoryId, asyncHandler(takeReactionBack));
 
 router.get('/memories', asyncHandler(getAllMemoriesAboutOnePerson));
 
