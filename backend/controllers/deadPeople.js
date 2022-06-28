@@ -1,5 +1,6 @@
 const DeadPerson = require('../models/deadPerson');
 const messages = require('../constants/messages');
+const deadPerson = require('../models/deadPerson');
 
 const getAllDeadPeople = async (req, res, next) => {
   const allDeadPeople = await DeadPerson.find({});
@@ -109,6 +110,24 @@ const uploadMainGallery = async (req, res, next) => {
   return res.status(200).send(deadPersonWithMainGallery);
 };
 
+const deletePhotoURLFromMainGallery = async (req, res, next) => {
+  const deadMan = await DeadPerson.findById(req.params.deadPersonId);
+
+  const photosWithoutChosenPhoto = deadMan.mainGallery.filter((item) => item !== req.body.photo);
+
+  const deadManWithEditedMainGallery = await deadPerson.findByIdAndUpdate(
+    req.params.deadPersonId,
+    { mainGallery: photosWithoutChosenPhoto },
+    {
+      new: true,
+      runValidators: true,
+      upsert: true,
+    },
+  );
+
+  return res.status(200).send(deadManWithEditedMainGallery);
+};
+
 const uploadHobbyGallery = async (req, res, next) => {
   const deadMan = await DeadPerson.findById(req.params.deadPersonId);
 
@@ -142,4 +161,5 @@ module.exports = {
   uploadHobbyGallery,
   deleteMainPhotoFromDB,
   getMainPhotoString,
+  deletePhotoURLFromMainGallery,
 };

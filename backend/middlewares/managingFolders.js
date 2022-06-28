@@ -36,17 +36,20 @@ const deleteMainPhotoFile = (req, res, next) => {
   next();
 };
 
-// вот это непонятная хуйня. надо завтра подумать - откуда брать имя фото, которое надо удалять
-// rmdir удаляет папку вместе с файлами. но этот способ нам подходит, только если мы удаляем main-photo, поскольку в этой папке, согласно нашей логике, должно быть не более одного фото. но этот способ не решает вопрос с галереей
-// можно брать имя файла из базы, предварительно сходив в нее перед удалением. ищем в базе человека по req.params.deadPersonId и берем значение mainPhoto
-// а вот с галереей как - хз. нуждно потолковать с сенсэем. по идее, на фронте у нас же есть имя файла. файл же как-то загружается. таким образом, когда ты его удаляешь, у тебя на фронте оно есть, значит, его можно прокинуть в req и оттуда точно так же достать. завтра надо тестить
-
 const createMainGalleryFolder = (req, res, next) => {
   fsPromises.mkdir(
     path.join(`./uploads/dead-people/${req.params.deadPersonId}/main-gallery`),
     { recursive: true },
   )
     .then(() => console.log(`папка ./uploads/dead-people/${req.params.deadPersonId}/main-gallery успешно создана`))
+    .catch((err) => console.log(err));
+
+  next();
+};
+
+const deletePhotoFileFromMainGallery = (req, res, next) => {
+  fsPromises.unlink(path.join(`${req.body.photo}`))
+    .then(() => console.log('photo was successfully deleted from the main gallery'))
     .catch((err) => console.log(err));
 
   next();
@@ -124,6 +127,7 @@ module.exports = {
   deleteMainPhotoFolder,
   deleteMainPhotoFile,
   createMainGalleryFolder,
+  deletePhotoFileFromMainGallery,
   createHobbiesGalleryFolder,
   createMemoryPhotosFolder,
   createTimelinePhotosFolder,

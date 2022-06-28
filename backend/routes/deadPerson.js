@@ -13,6 +13,7 @@ const {
   createHobbiesGalleryFolder,
   deleteMainPhotoFile,
   deleteMainPhotoFolder,
+  deletePhotoFileFromMainGallery,
 } = require('../middlewares/managingFolders');
 
 const { validateDeadPersonInfo, validateDeadPersonId } = require('../middlewares/celebrate');
@@ -28,6 +29,7 @@ const {
   uploadHobbyGallery,
   deleteMainPhotoFromDB,
   getMainPhotoString,
+  deletePhotoURLFromMainGallery,
 } = require('../controllers/deadPeople');
 
 router.get('/', asyncHandler(getAllDeadPeople));
@@ -72,6 +74,13 @@ router.patch(
   createMainGalleryFolder,
   multer.uploadMainGallery.array('main-gallery', 12),
   asyncHandler(uploadMainGallery),
+);
+
+router.delete(
+  '/:deadPersonId/main-gallery',
+  validateDeadPersonId,
+  deletePhotoFileFromMainGallery,
+  asyncHandler(deletePhotoURLFromMainGallery),
 );
 
 router.patch(
