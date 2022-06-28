@@ -66,8 +66,8 @@ router.patch(
   '/:deadPersonId/main-photo',
   validateDeadPersonId,
   getMainPhotoString,
-  deleteMainPhotoFile,
   multer.uploadMainPhoto.single('main-photo'),
+  deleteMainPhotoFile,
   asyncHandler(uploadMainPhoto),
 );
 
@@ -75,7 +75,7 @@ router.post(
   '/:deadPersonId/main-gallery',
   validateDeadPersonId,
   createMainGalleryFolder,
-  multer.uploadMainGallery.array('main-gallery', 12),
+  multer.uploadMainGallery.array('main-gallery', 2),
   asyncHandler(uploadMainGallery),
 );
 

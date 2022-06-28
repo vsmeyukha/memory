@@ -1,5 +1,6 @@
 const multer = require('multer');
 const generateFileName = require('../utils/generateFileName');
+const multerLimits = require('../constants/multerLimits');
 
 const getError = (file) => {
   if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.mimetype === 'image/webp') {
@@ -85,12 +86,30 @@ const userAvatarStorage = multer.diskStorage({
   },
 });
 
-const uploadMainPhoto = multer({ storage: mainPhotoStorage });
-const uploadMainGallery = multer({ storage: mainGalleryStorage });
-const uploadHobbyGallery = multer({ storage: hobbyGalleryStorage });
-const uploadMemoryPhoto = multer({ storage: memoryPhotoStorage });
-const uploadTimelinePhoto = multer({ storage: timelinePhotoStorage });
-const uploadUserAvatar = multer({ storage: userAvatarStorage });
+const uploadMainPhoto = multer({
+  storage: mainPhotoStorage,
+  ...multerLimits,
+});
+const uploadMainGallery = multer({
+  storage: mainGalleryStorage,
+  ...multerLimits,
+});
+const uploadHobbyGallery = multer({
+  storage: hobbyGalleryStorage,
+  ...multerLimits,
+});
+const uploadMemoryPhoto = multer({
+  storage: memoryPhotoStorage,
+  ...multerLimits,
+});
+const uploadTimelinePhoto = multer({
+  storage: timelinePhotoStorage,
+  ...multerLimits,
+});
+const uploadUserAvatar = multer({
+  storage: userAvatarStorage,
+  ...multerLimits,
+});
 
 module.exports = {
   uploadMainPhoto,

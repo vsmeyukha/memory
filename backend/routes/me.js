@@ -69,8 +69,8 @@ router.patch(
   '/change-avatar',
   auth,
   getAvatarString,
-  deleteUserAvatarFile,
   uploadUserAvatar.single('avatar'),
+  deleteUserAvatarFile,
   asyncHandler(uploadAvatar),
 );
 
