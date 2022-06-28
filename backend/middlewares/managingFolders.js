@@ -47,7 +47,7 @@ const createMainGalleryFolder = (req, res, next) => {
   next();
 };
 
-const deletePhotoFileFromMainGallery = (req, res, next) => {
+const deletePhotoFileFromGallery = (req, res, next) => {
   fsPromises.unlink(path.join(`${req.body.photo}`))
     .then(() => console.log('photo was successfully deleted from the main gallery'))
     .catch((err) => console.log(err));
@@ -127,7 +127,7 @@ module.exports = {
   deleteMainPhotoFolder,
   deleteMainPhotoFile,
   createMainGalleryFolder,
-  deletePhotoFileFromMainGallery,
+  deletePhotoFileFromGallery,
   createHobbiesGalleryFolder,
   createMemoryPhotosFolder,
   createTimelinePhotosFolder,

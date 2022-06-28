@@ -13,7 +13,7 @@ const {
   createHobbiesGalleryFolder,
   deleteMainPhotoFile,
   deleteMainPhotoFolder,
-  deletePhotoFileFromMainGallery,
+  deletePhotoFileFromGallery,
 } = require('../middlewares/managingFolders');
 
 const { validateDeadPersonInfo, validateDeadPersonId } = require('../middlewares/celebrate');
@@ -30,6 +30,7 @@ const {
   deleteMainPhotoFromDB,
   getMainPhotoString,
   deletePhotoURLFromMainGallery,
+  deletePhotoURLFromHobbyGallery,
 } = require('../controllers/deadPeople');
 
 router.get('/', asyncHandler(getAllDeadPeople));
@@ -79,7 +80,7 @@ router.patch(
 router.delete(
   '/:deadPersonId/main-gallery',
   validateDeadPersonId,
-  deletePhotoFileFromMainGallery,
+  deletePhotoFileFromGallery,
   asyncHandler(deletePhotoURLFromMainGallery),
 );
 
@@ -89,6 +90,13 @@ router.patch(
   createHobbiesGalleryFolder,
   multer.uploadHobbyGallery.array('hobby-gallery', 12),
   asyncHandler(uploadHobbyGallery),
+);
+
+router.delete(
+  '/:deadPersonId/hobby-gallery',
+  validateDeadPersonId,
+  deletePhotoFileFromGallery,
+  asyncHandler(deletePhotoURLFromHobbyGallery),
 );
 
 // ! роутинг воспоминаний

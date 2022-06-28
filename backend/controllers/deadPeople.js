@@ -150,6 +150,24 @@ const uploadHobbyGallery = async (req, res, next) => {
   return res.status(200).send(deadPersonWithHobbyGallery);
 };
 
+const deletePhotoURLFromHobbyGallery = async (req, res, next) => {
+  const deadMan = await DeadPerson.findById(req.params.deadPersonId);
+
+  const photosWithoutChosenPhoto = deadMan.hobbyGallery.filter((item) => item !== req.body.photo);
+
+  const deadManWithEditedHobbyGallery = await deadPerson.findByIdAndUpdate(
+    req.params.deadPersonId,
+    { hobbyGallery: photosWithoutChosenPhoto },
+    {
+      new: true,
+      runValidators: true,
+      upsert: true,
+    },
+  );
+
+  return res.status(200).send(deadManWithEditedHobbyGallery);
+};
+
 module.exports = {
   getAllDeadPeople,
   getDeadPerson,
@@ -162,4 +180,5 @@ module.exports = {
   deleteMainPhotoFromDB,
   getMainPhotoString,
   deletePhotoURLFromMainGallery,
+  deletePhotoURLFromHobbyGallery,
 };
