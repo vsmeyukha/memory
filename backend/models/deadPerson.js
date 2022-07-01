@@ -4,12 +4,21 @@ const errors = require('../constants/errors');
 
 const anyPersonSchema = require('../constants/schemas/anyPersonSchema');
 
+const obj = {
+  ...anyPersonSchema,
+  dateOfBirth: {
+    ...anyPersonSchema.dateOfBirth,
+    required: true,
+  },
+};
+
 const deadPersonSchema = new mongoose.Schema(
   {
-    ...anyPersonSchema,
+    ...obj,
     dateOfDeath: {
       type: Date,
       max: Date(),
+      required: true,
     },
     placeOfBirth: {
       type: String,

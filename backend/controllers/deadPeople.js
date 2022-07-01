@@ -20,18 +20,35 @@ const getDeadPerson = async (req, res, next) => {
 // тут наверное надо будет определить более конкретные сценарии ошибок.
 // а общую ошибку отлавливает async handler в routes
 const addNewDeadPerson = async (req, res, next) => {
-  // ? сохраняем айдишник пользователя в переменную
-  const owner = req.user._id;
+  // ? проверяем, не зарегистрировал ли уже кто-то человека с таким же ФИО, датами рождения и смерти
+  const matchedDeadPeople = await DeadPerson.find({
+    name: req.body.name,
+    surname: req.body.surname,
+    dateOfBirth: req.body.dateOfBirth,
+    dateOfDeath: req.body.dateOfDeath,
+  });
 
-  // ? создаем новый объект - в нем все поля из тела запроса + айдишник пользователя
-  // ? который у нас сохранен в переменную owner
-  const deadManWithOwner = { ...req.body, owner };
+  if (matchedDeadPeople.length !== 0) {
+    res.status(409).send({
+      message: 'Похоже, этот человек уже есть на сайте:',
+      people: {
+        ...matchedDeadPeople,
+      },
+    });
+  } else {
+    // ? сохраняем айдишник пользователя в переменную
+    const owner = req.user._id;
 
-  // ? создаем новую запись в базе. отправляем в базу выше созданный объект
-  const newDeadPerson = await DeadPerson.create(deadManWithOwner);
+    // ? создаем новый объект - в нем все поля из тела запроса + айдишник пользователя
+    // ? который у нас сохранен в переменную owner
+    const deadManWithOwner = { ...req.body, owner };
 
-  // ? отправляем в ответ нового созданного умершего
-  return res.status(200).send(newDeadPerson);
+    // ? создаем новую запись в базе. отправляем в базу выше созданный объект
+    const newDeadPerson = await DeadPerson.create(deadManWithOwner);
+
+    // ? отправляем в ответ нового созданного умершего
+    return res.status(200).send(newDeadPerson);
+  }
 };
 
 const updateDeadPerson = async (req, res, next) => {

@@ -19,20 +19,21 @@ const anyPerson = {
   surname: Joi.string().required().min(2).max(30),
   patronymic: Joi.string().min(2).max(30),
   sex: Joi.bool(),
-  dateOfBirth: Joi.date(),
   mainPhoto: Joi.string(),
 };
 
 const userInfo = {
   ...anyPerson,
   email: Joi.string().required().email(),
+  dateOfBirth: Joi.date(),
 };
 
 const deadPersonInfo = {
   ...anyPerson,
-  dateOfDeath: Joi.date(),
+  dateOfBirth: Joi.date().required(),
+  dateOfDeath: Joi.date().required(),
   placeOfBirth: Joi.string(),
-  placeofBirth: Joi.string(),
+  placeofDeath: Joi.string(),
   description: Joi.string().min(2).max(2000),
   mainGallery: Joi.array(),
   hobbyGallery: Joi.array(),
