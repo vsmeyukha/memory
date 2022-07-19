@@ -1,4 +1,6 @@
-class CastError extends Error {
+const BasicError = require('./BasicError');
+
+class CastError extends BasicError {
   constructor(message) {
     super(message);
     this.statusCode = 400;

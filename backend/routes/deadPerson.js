@@ -16,7 +16,7 @@ const {
   deletePhotoFileFromGallery,
 } = require('../middlewares/managingFolders');
 
-const { validateDeadPersonInfo, validateDeadPersonId } = require('../middlewares/celebrate');
+const { validateDeadPersonInfo, validateDeadPersonId, validateDeadPersonInfoForUpdating } = require('../middlewares/celebrate');
 
 const {
   getAllDeadPeople,
@@ -41,7 +41,7 @@ router.get('/:deadPersonId', validateDeadPersonId, asyncHandler(getDeadPerson));
 
 router.post('/', validateDeadPersonInfo, asyncHandler(addNewDeadPerson));
 
-router.patch('/:deadPersonId', validateDeadPersonId, validateDeadPersonInfo, asyncHandler(updateDeadPerson));
+router.patch('/:deadPersonId', validateDeadPersonId, validateDeadPersonInfoForUpdating, asyncHandler(updateDeadPerson));
 
 router.delete('/:deadPersonId', validateDeadPersonId, asyncHandler(deleteDeadPerson));
 

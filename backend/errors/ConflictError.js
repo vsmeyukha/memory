@@ -1,6 +1,8 @@
-class ConflictError extends Error {
-  constructor(message) {
-    super(message);
+const ErrorWithAdditionalInfo = require('./ErrorWithAdditionalInfo');
+
+class ConflictError extends ErrorWithAdditionalInfo {
+  constructor(obj) {
+    super(obj);
     this.statusCode = 409;
   }
 }

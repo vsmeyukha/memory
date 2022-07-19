@@ -1,4 +1,6 @@
-class ForbiddenError extends Error {
+const BasicError = require('./BasicError');
+
+class ForbiddenError extends BasicError {
   constructor(message) {
     super(message);
     this.statusCode = 403;

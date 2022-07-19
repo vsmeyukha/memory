@@ -4,7 +4,8 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
-const { errors } = require('celebrate');
+const { errors, isCelebrateError, CelebrateError } = require('celebrate');
+const CastError = require('./errors/castError');
 
 const router = require('./routes/index');
 
@@ -34,7 +35,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/', router);
 
-app.use(errors());
+// app.use(errors());
+
+app.use((err, req, res, next) => {
+  if (isCelebrateError) {
+    return next(err);
+  } return next(err);
+});
 
 app.use(errorHandler);
 

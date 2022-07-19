@@ -23,6 +23,20 @@ const getAllUsers = async (req, res, next) => {
   return res.status(200).send(allUsers);
 };
 
+const getOneUser = async (req, res, next) => {
+  try {
+    const foundUser = await User.findById(req.params.userId)
+      .orFail(new NotFoundError(errors.notFoundUser));
+
+    return res.status(200).send(foundUser);
+  } catch (err) {
+    if (err.name === 'CastError') {
+      return next(new CastError(errors.strangeRequest));
+    }
+    return next(err);
+  }
+};
+
 // ! регистрируемся
 const register = async (req, res, next) => {
   try {
@@ -52,7 +66,7 @@ const register = async (req, res, next) => {
       mainPhoto,
       email,
       password: encryptedPassword,
-    });
+    }).orFail(new CastError(errors.invalidEmail));
 
     // ? а в ответе не возвращаем зашифрованный пароль, он уходит только в базу
     return res.status(200).send({
@@ -66,7 +80,7 @@ const register = async (req, res, next) => {
     });
   } catch (err) {
     if (err.name === 'MongoError' && err.code === 11000) {
-      return next(new ConflictError(errors.invalidEmail));
+      return next(new ConflictError(errors.conflictEmail));
     }
     return next(err);
   }
@@ -81,12 +95,9 @@ const login = async (req, res, next) => {
     const { email, password } = req.body;
 
     // ? ищем юзера по емэйлу
-    const userFoundByEmail = await User.findOne({ email }).select('+password');
-
     // ? если не найдем, выбрасываем ошибку авторизации - неправильный емэйл или пассворд
-    if (!userFoundByEmail) {
-      throw new AuthorizationError(errors.authorizationEmailOrPassword);
-    }
+    const userFoundByEmail = await User.findOne({ email }).select('+password')
+      .orFail(new AuthorizationError(errors.authorizationEmailOrPassword));
 
     // ? если емэйл совпал, сравниваем введенный пользователем пароль с хранящимся в базе паролем
     const matchedPassword = await bcrypt.compare(password, userFoundByEmail.password);
@@ -133,36 +144,25 @@ const login = async (req, res, next) => {
 // ! ищем конкретного пользователя.
 // ! применяется, когда, например, заходим в личный кабинет. отдает данные юзера на фронт
 // ? посмотреть, как переписать на async await функции с orFail
-const getCurrentUser = (req, res, next) => {
-  User.findById(req.user._id)
-    .orFail(new NotFoundError(errors.notFoundUser))
-    .then((user) => res.status(200).send(user))
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        return next(new CastError(errors.strangeRequest));
-      }
-      return next(err);
-    });
+const getCurrentUser = async (req, res, next) => {
+  try {
+    const foundUser = await User.findById(req.user._id)
+      .orFail(new NotFoundError(errors.notFoundUser));
+
+    return res.status(200).send(foundUser);
+  } catch (err) {
+    if (err.name === 'CastError') {
+      return next(new CastError(errors.strangeRequest));
+    }
+    return next(err);
+  }
 };
 
 // ! обновление данных о юзере. работает также, как и поиск конкретного.
 // ! только записывает новые данные в базу
-const updateUser = (req, res, next) => {
-  const {
-    name,
-    surname,
-    patronymic,
-    email,
-    sex,
-    dateOfBirth,
-    mainPhoto,
-  } = req.body;
-
-  const { _id = '' } = req.user;
-
-  User.findByIdAndUpdate(
-    _id,
-    {
+const updateUser = async (req, res, next) => {
+  try {
+    const {
       name,
       surname,
       patronymic,
@@ -170,23 +170,34 @@ const updateUser = (req, res, next) => {
       sex,
       dateOfBirth,
       mainPhoto,
-    },
-    {
-      new: true,
-      runValidators: true,
-      upsert: true,
-    },
-  )
-    .orFail(new NotFoundError(errors.notFoundUser))
-    .then((user) => {
-      res.status(200).send({ user });
-    })
-    .catch((err) => {
-      if (err.name === '[MongoError' && err.code === 11000) {
-        return next(new ConflictError(errors.conflictEmail));
-      }
-      return next(err);
-    });
+    } = req.body;
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        name,
+        surname,
+        patronymic,
+        email,
+        sex,
+        dateOfBirth,
+        mainPhoto,
+      },
+      {
+        new: true,
+        runValidators: true,
+        upsert: true,
+      },
+    )
+      .orFail(new NotFoundError(errors.notFoundUser));
+
+    return res.status(200).send(updatedUser);
+  } catch (err) {
+    if (err.name === '[MongoError' && err.code === 11000) {
+      return next(new ConflictError(errors.conflictEmail));
+    }
+    return next(err);
+  }
 };
 
 // ! разлогин. в токен записываем пустую строку, токен отправляем в куку
@@ -197,9 +208,8 @@ const signOut = (req, res) => {
   res.cookie('jwt', token, {
     httpOnly: true,
   })
-    .status(201).send({
-      message: messages.deleteCookie,
-    });
+    .status(201)
+    .send({ message: messages.deleteCookie });
 };
 
 // ! удаляем пользователя
@@ -208,16 +218,15 @@ const signOut = (req, res) => {
 // ! отправляем токен в куку
 // ! отправляем ответ, что ваш акк удален
 const deleteUser = async (req, res, next) => {
-  await User.findByIdAndRemove(req.user._id);
+  await User.findByIdAndRemove(req.user._id).orFail(new NotFoundError(errors.notFoundUser));
 
   const token = '';
 
   res.cookie('jwt', token, {
     httpOnly: true,
   })
-    .status(201).send({
-      message: messages.deleteYourAccount,
-    });
+    .status(201)
+    .send({ message: messages.deleteYourAccount });
 };
 
 const uploadAvatar = async (req, res, next) => {
@@ -229,7 +238,7 @@ const uploadAvatar = async (req, res, next) => {
       runValidators: true,
       upsert: true,
     },
-  );
+  ).orFail(new CastError(errors.strangeRequest));
 
   return res.status(200).send(userWithAvatar);
 };
@@ -240,7 +249,7 @@ const getAvatarString = async (req, res, next) => {
   req.userAvatar = currentUser.mainPhoto;
 
   next();
-}
+};
 
 const deleteAvatar = async (req, res, next) => {
   const userWithoutAvatar = await User.findByIdAndUpdate(
@@ -251,13 +260,14 @@ const deleteAvatar = async (req, res, next) => {
       runValidators: true,
       upsert: true,
     },
-  );
+  ).orFail(new CastError(errors.strangeRequest));
 
   return res.status(200).send(userWithoutAvatar);
 };
 
 module.exports = {
   getAllUsers,
+  getOneUser,
   register,
   login,
   getCurrentUser,

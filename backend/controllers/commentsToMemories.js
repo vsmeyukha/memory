@@ -1,6 +1,9 @@
 const Comment = require('../models/commentToMemory');
 const messages = require('../constants/messages');
 const { localTimeWithoutSeconds } = require('../utils/time');
+const NotFoundError = require('../errors/notFoundError');
+const CastError = require('../errors/castError');
+const errors = require('../constants/errors');
 
 const addNewComment = async (req, res, next) => {
   const owner = req.user._id;
@@ -18,69 +21,95 @@ const addNewComment = async (req, res, next) => {
 };
 
 const updateComment = async (req, res, next) => {
-  const updatedComment = await Comment.findByIdAndUpdate(
-    req.params.commentId,
-    {
-      ...req.body,
-      edited: true,
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    },
-    {
-      new: true,
-      runValidators: true,
-      upsert: true,
-    },
-  );
+  try {
+    const updatedComment = await Comment.findByIdAndUpdate(
+      req.params.commentId,
+      {
+        ...req.body,
+        edited: true,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      },
+      {
+        new: true,
+        runValidators: true,
+        upsert: true,
+      },
+    ).orFail(new NotFoundError(errors.notFoundComment));
 
-  return res.status(200).send(updatedComment);
+    return res.status(200).send(updatedComment);
+  } catch (err) {
+    if (err.name === 'CastError') {
+      return next(new CastError(errors.strangeRequest));
+    }
+    return next(err);
+  }
 };
 
 const addReaction = async (req, res, next) => {
-  const commentWithAReaction = await Comment.findByIdAndUpdate(
-    req.params.commentId,
-    {
-      $addToSet:
-        { reaction: req.user._id },
-    },
-    { new: true },
-  );
+  try {
+    const commentWithAReaction = await Comment.findByIdAndUpdate(
+      req.params.commentId,
+      {
+        $addToSet:
+          { reaction: req.user._id },
+      },
+      { new: true },
+    ).orFail(new NotFoundError(errors.notFoundComment));
 
-  return res.status(200).send(commentWithAReaction);
+    return res.status(200).send(commentWithAReaction);
+  } catch (err) {
+    if (err.name === 'CastError') {
+      return next(new CastError(errors.strangeRequest));
+    }
+    return next(err);
+  }
 };
 
 const takeReactionBack = async (req, res, next) => {
-  const commentWithoutAReaction = await Comment.findByIdAndUpdate(
-    req.params.commentId,
-    {
-      $pull:
-        { reaction: req.user._id },
-    },
-    { new: true },
-  );
+  try {
+    const commentWithoutAReaction = await Comment.findByIdAndUpdate(
+      req.params.commentId,
+      {
+        $pull:
+          { reaction: req.user._id },
+      },
+      { new: true },
+    ).orFail(new NotFoundError(errors.notFoundComment));
 
-  return res.status(200).send(commentWithoutAReaction);
+    return res.status(200).send(commentWithoutAReaction);
+  } catch (err) {
+    if (err.name === 'CastError') {
+      return next(new CastError(errors.strangeRequest));
+    }
+    return next(err);
+  }
 };
 
 const getCurrentComment = async (req, res, next) => {
-  const currentComment = await Comment.findById(req.params.commentId);
+  const currentComment = await Comment.findById(req.params.commentId)
+    .orFail(new NotFoundError(errors.notFoundComment));
 
   return res.status(200).send(currentComment);
 };
 
 const getAllCommentsToOneMemory = async (req, res, next) => {
-  const allComments = await Comment.find({ affiliation: req.params.memoryId });
+  const allComments = await Comment.find({ affiliation: req.params.memoryId })
+    .orFail(new NotFoundError(errors.notFoundComment));
 
   return res.status(200).send(allComments);
 };
 
 const getAllCommentsWrittenByOnePerson = async (req, res, next) => {
-  const allCommentsWrittenByOnePerson = await Comment.find({ owner: req.user._id });
+  const allCommentsWrittenByOnePerson = await Comment.find({ owner: req.user._id })
+    .orFail(new NotFoundError(errors.notFoundComment));
 
   return res.status(200).send(allCommentsWrittenByOnePerson);
 };
 
 const deleteComment = async (req, res, next) => {
-  await Comment.findByIdAndRemove(req.params.commentId);
+  await Comment.findByIdAndRemove(req.params.commentId)
+    .orFail(new NotFoundError(errors.notFoundComment));
+
   return res.status(200).send({ message: messages.deleteComment });
 };
 

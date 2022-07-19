@@ -3,10 +3,11 @@ const asyncHandler = require('express-async-handler');
 
 const auth = require('../middlewares/auth');
 
-const { validateEmailAndPassword, validateUserInfo, validateRegistration } = require('../middlewares/celebrate');
+const { validateEmailAndPassword, validateUserInfo, validateRegistration, validateUserId } = require('../middlewares/celebrate');
 
 const {
   getAllUsers,
+  getOneUser,
   register,
   login,
   getCurrentUser,
@@ -74,7 +75,8 @@ router.patch(
   asyncHandler(uploadAvatar),
 );
 
-// ? это тестовая история, ее потом надо будет подчистить
-router.get('/allusers', asyncHandler(getAllUsers));
+router.get('/allusers', auth, asyncHandler(getAllUsers));
+
+router.get('/:userId', auth, validateUserId, asyncHandler(getOneUser));
 
 module.exports = router;

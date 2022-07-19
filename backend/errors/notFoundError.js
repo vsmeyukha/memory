@@ -1,4 +1,6 @@
-class NotFoundError extends Error {
+const BasicError = require('./BasicError');
+
+class NotFoundError extends BasicError {
   constructor(message) {
     super(message);
     this.statusCode = 404;

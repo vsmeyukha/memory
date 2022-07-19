@@ -19,10 +19,7 @@ const {
   takeReactionBack,
 } = require('../controllers/memories');
 
-router.post(
-  '/add-new-memory',
-  asyncHandler(addNewMemory),
-);
+router.post('/add-new-memory', asyncHandler(addNewMemory));
 
 router.post(
   '/add-new-memory-with-photo',
